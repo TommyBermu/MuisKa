@@ -1,3 +1,55 @@
 <resources>
+    <!-- Log in -->
     <string name="app_name">MuisKa</string>
+    <string name="email">Email</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="enter">Entrar</string>
+    <string name="no_cuenta_registar">¿No tienes una cuenta?</string>
+    <string name="register">Registrarme</string>
+    <string name="alternativos">Entrar con otras aplicaiones</string>
+
+    <!-- Register -->
+
+    <string name="confirmacion">Verifique su correo electrónico con el link enviado al correo proporcionado y luego inicie sesión</string>
+    <string name="okey">Okey</string>
+    <string name="title_register">¡Registra aquí tus datos!</string>
+    <string name="nombres">Nombres</string>
+    <string name="apellidos">Apellidos</string>
+    <string name="new_correo">Correo electrónico</string>
+    <string name="crea_constraseña">Contraseña</string>
+    <string name="repite_constraseña">Repita la Contraseña</string>
+    <string name="registro_usuario">Registrar un nuevo usuario</string>
+
+    <!-- Home -->
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="close_nav">Close Navigation Drawer</string>
+
+    <!-- Selection -->
+    <string name="title_selection">Seleccione su relación con la Comunidad Indígena Muisca de Bosa</string>
+    <string name="soy_miembro">Soy Miembro</string>
+    <string name="no_soy_miembro">NO Soy Miembro</string>
+
+    <!-- Firebase -->
+    <string name="prefs_file">com.example.pueblosdb.PREFERENCE_FILE_KEY</string>
+
+    <!-- Fragments -->
+    <string name="profile_fragment">Profile fragment</string>
+    <string name="home_fragment"> Home fragment</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Wallet activity -->
+    <string name="title_activity_wallet">WalletActivity</string>
+    <string name="add_to_google_wallet_button_content_description">Add to Google Wallet</string>
+    <string name="sample_pass" translatable="false">Sample Pass</string>
+    <string name="google_wallet_status_unavailable" translatable="false">Unfortunately, Google
+        Wallet is not available on this phone.
+    </string>
+    <string name="add_google_wallet_success" translatable="false">The pass was added successfully!
+    </string>
+    <string name="add_google_wallet_cancelled" translatable="false">The user cancelled adding the
+        pass to Google Wallet.
+    </string>
+    <string name="add_google_wallet_unknown_error" translatable="false">An unknown error occurred
+        when adding pass to Google Wallet.
+    </string>
 </resources>

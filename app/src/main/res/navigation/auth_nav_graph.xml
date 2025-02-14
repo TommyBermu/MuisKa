@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_nav_graph"
+    app:startDestination="@id/logInFragment">
+
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.example.pueblosdb.LogInFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_logInFragment_to_appRegisterFragment"
+            app:destination="@id/appRegisterFragment" />
+        <action
+            android:id="@+id/action_logInFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/appRegisterFragment"
+        android:name="com.example.pueblosdb.AppRegisterFragment"
+        android:label="fragment_app_register"
+        tools:layout="@layout/fragment_app_register" >
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.pueblosdb.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" >
+    </fragment>
+</navigation>

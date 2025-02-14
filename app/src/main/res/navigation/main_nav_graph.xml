@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.pueblosdb.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.pueblosdb.ProfileUserFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile_user" />
+    <fragment
+        android:id="@+id/marketFragment"
+        android:name="com.example.pueblosdb.MarketFragment"
+        android:label="fragment_market"
+        tools:layout="@layout/fragment_market" />
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="com.example.pueblosdb.LibraryFragment"
+        android:label="fragment_library"
+        tools:layout="@layout/fragment_library" />
+    <fragment
+        android:id="@+id/changeFolderFragment"
+        android:name="com.example.pueblosdb.ChangeFolderFragment"
+        android:label="fragment_change_folder"
+        tools:layout="@layout/fragment_change_folder" />
+    <fragment
+        android:id="@+id/groupsFragment"
+        android:name="com.example.pueblosdb.GroupsFragment"
+        android:label="fragment_groups"
+        tools:layout="@layout/fragment_groups" >
+        <action
+            android:id="@+id/action_groupsFragment_to_joinGroupFragment"
+            app:destination="@id/joinGroupFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/financeFragment"
+        android:name="com.example.pueblosdb.FinanceFragment"
+        android:label="fragment_finance"
+        tools:layout="@layout/fragment_finance" />
+    <fragment
+        android:id="@+id/publishFragment"
+        android:name="com.example.pueblosdb.CreatePublishFragment"
+        android:label="fragment_publish"
+        tools:layout="@layout/fragment_create_publish" />
+    <fragment
+        android:id="@+id/requestFolderChangeFragment"
+        android:name="com.example.pueblosdb.RequestFolderChangeFragment"
+        android:label="fragment_request_folder_change"
+        tools:layout="@layout/fragment_request_folder_change" />
+    <fragment
+        android:id="@+id/requestConvFragment"
+        android:name="com.example.pueblosdb.RequestConvFragment"
+        android:label="fragment_request_conv"
+        tools:layout="@layout/fragment_request_conv" />
+    <fragment
+        android:id="@+id/requestGroupFragment"
+        android:name="com.example.pueblosdb.RequestGroupFragment"
+        android:label="fragment_request_group"
+        tools:layout="@layout/fragment_request_group" />
+    <fragment
+        android:id="@+id/createGroupFragment"
+        android:name="com.example.pueblosdb.CreateGroupFragment"
+        android:label="fragment_create_group"
+        tools:layout="@layout/fragment_create_group" />
+    <fragment
+        android:id="@+id/joinGroupFragment"
+        android:name="com.example.pueblosdb.JoinGroupFragment"
+        android:label="fragment_join_group"
+        tools:layout="@layout/fragment_join_group" />
+</navigation>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:title="General">
+            <menu>
+                <item android:id="@+id/folder_change_menu"
+                    android:icon="@drawable/baseline_folder_shared_24"
+                    android:title="Cambio de Carpeta"/>
+                <item android:id="@+id/group_join_menu"
+                    android:icon="@drawable/baseline_groups_24"
+                    android:title="Grupos"/>
+                <item android:id="@+id/finance_status_menu"
+                    android:icon="@drawable/baseline_monetization_on_24"
+                    android:title="Finanzas"/>
+            </menu>
+        </item>
+        <item
+            android:title="Solicitudes">
+            <menu>
+                <item android:id="@+id/convs_requests_menu"
+                    android:icon="@drawable/baseline_rule_folder_24"
+                    android:title="Ingreso a Convocatorias"/>
+                <item android:id="@+id/folders_requests_menu"
+                    android:icon="@drawable/baseline_drive_file_move_24"
+                    android:title="Cambios de Carpeta"/>
+                <item android:id="@+id/groups_requests_menu"
+                    android:icon="@drawable/baseline_person_add_24"
+                    android:title="Ingreso a Grupos"/>
+
+            </menu>
+        </item>
+        <item android:title="Creación">
+            <menu>
+                <item android:id="@+id/create_publication_menu"
+                    android:icon="@drawable/baseline_publish_24"
+                    android:title="Crear una Publicación"/>
+                <item android:id="@+id/create_group_menu"
+                    android:icon="@drawable/baseline_group_add_24"
+                    android:title="Crear un Grupo"/>
+                <item android:id="@+id/add_book_menu"
+                    android:icon="@drawable/baseline_library_add_24"
+                    android:title="Añadir un libro"/>
+            </menu>
+        </item>
+        <item android:id="@+id/logout_menu"
+            android:icon="@drawable/baseline_logout_24"
+            android:title="Salir de la Cuenta"/>
+    </group>
+</menu>

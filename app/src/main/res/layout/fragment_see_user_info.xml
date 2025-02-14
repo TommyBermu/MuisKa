@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_beige"
+    tools:context=".SeeUserInfoFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-27dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/muiska_half_logo" />
+
+            <TextView
+                android:id="@+id/Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:hint="Perfil de comunero"
+                android:textColor="@color/dark_blue"
+                android:textCursorDrawable="@color/light_blue"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/surnamevisualizer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+
+            <TextView
+                android:id="@+id/namevisualizer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:hint="Nombres"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/surnamevisualizer"
+                app:layout_constraintStart_toStartOf="@+id/guideline12"
+                app:layout_constraintTop_toTopOf="@+id/surnamevisualizer" />
+
+            <TextView
+                android:id="@+id/surnamevisualizer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_horizontal"
+                android:hint="Apellidos"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/emailvisualizer"
+                app:layout_constraintEnd_toEndOf="@+id/guideline13"
+                app:layout_constraintStart_toEndOf="@+id/namevisualizer"
+                app:layout_constraintTop_toBottomOf="@+id/Title" />
+
+            <TextView
+                android:id="@+id/emailvisualizer"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:minWidth="200dp"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/otherInfo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/surnamevisualizer" />
+
+            <TextView
+                android:id="@+id/otherInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:text="Otros Datos Personales"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/surnameMother"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/emailvisualizer" />
+
+            <TextView
+                android:id="@+id/nameMother"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Nombres Madre"
+                android:inputType="text"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/surnameMother"
+                app:layout_constraintStart_toStartOf="@+id/guideline12"
+                app:layout_constraintTop_toTopOf="@+id/surnameMother" />
+
+            <TextView
+                android:id="@+id/surnameMother"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:hint="Apellidos Madre"
+                android:inputType="text"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/surnameFather"
+                app:layout_constraintEnd_toEndOf="@+id/guideline13"
+                app:layout_constraintStart_toEndOf="@+id/nameMother"
+                app:layout_constraintTop_toBottomOf="@+id/otherInfo" />
+
+            <TextView
+                android:id="@+id/nameFather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Nombres Padre"
+                android:inputType="text"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/surnameFather"
+                app:layout_constraintStart_toStartOf="@+id/guideline12"
+                app:layout_constraintTop_toTopOf="@+id/surnameFather" />
+
+            <TextView
+                android:id="@+id/surnameFather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:hint="Apellidos Padre"
+                android:inputType="text"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/birthdayDate"
+                app:layout_constraintEnd_toEndOf="@+id/guideline13"
+                app:layout_constraintStart_toEndOf="@+id/nameFather"
+                app:layout_constraintTop_toBottomOf="@+id/surnameMother" />
+
+            <TextView
+                android:id="@+id/birthdayDate"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded_layout_5"
+                android:gravity="center"
+                android:hint="Fecha de Nacimiento"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@id/viewSexo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/surnameFather" />
+
+            <TextView
+                android:id="@+id/viewClan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="Clan"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/viewSexo"
+                app:layout_constraintTop_toTopOf="@+id/viewSexo" />
+
+            <TextView
+                android:id="@+id/viewSexo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Sexo"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                app:layout_constraintBottom_toTopOf="@id/profession"
+                app:layout_constraintEnd_toStartOf="@+id/viewClan"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/birthdayDate" />
+
+
+            <TextView
+                android:id="@+id/profession"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="50dp"
+                android:hint="Profesion"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewSexo" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</FrameLayout>
