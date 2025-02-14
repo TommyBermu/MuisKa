@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.muiska" />
+                  <option name="mobileSdkAppId" value="1:784183939294:android:5ce9e8eae48999f64fb24f" />
+                  <option name="projectId" value="muiska-1c994" />
+                  <option name="projectNumber" value="784183939294" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
