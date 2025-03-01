@@ -6,16 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-// import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
 import com.muiska.R;
 import com.muiska.clases.Publicacion;
-
 import java.util.ArrayList;
-
 
 public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.PublicacionViewHolder> implements RecyclerViewClickListener{
     private ArrayList<Publicacion> mPublicaciones;
@@ -38,6 +34,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
     @Override
     public void onBindViewHolder(@NonNull PublicacionViewHolder holder, int position) {
 
+        // aca se coloca la informacion que debe ir en el Adapter
         Glide.with(mContext).load(mPublicaciones.get(position).getLink_imagen()).into(holder.image);
         Publicacion publicacion = mPublicaciones.get(position);
 
@@ -59,7 +56,6 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
     @Override
     public void onItemLongCliked(int position) {}
 
-
     public static class PublicacionViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView title;
@@ -78,7 +74,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
                 @Override
                 public void onClick(View v) {
                     if (listener != null){
-                        int pos = getAbsoluteAdapterPosition();
+                        int pos = getAdapterPosition();
                         if (pos != RecyclerView.NO_POSITION){
                             listener.onItemCliked(pos);
                         }
@@ -90,7 +86,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
                 @Override
                 public boolean onLongClick(View v) {
                     if (listener != null){
-                        int pos = getAbsoluteAdapterPosition();
+                        int pos = getAdapterPosition();
                         if (pos != RecyclerView.NO_POSITION){
                             listener.onItemLongCliked(pos);
                         }

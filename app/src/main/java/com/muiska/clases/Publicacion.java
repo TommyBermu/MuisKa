@@ -8,64 +8,51 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class Publicacion implements Comparable<Publicacion> {
-    private String titulo, link_imagen, descripcion;
+    private int pubId;
+    private String titulo, descripcion;
+    private byte[] link_imagen;
     private String fecha_publicacion, fecha_finalizacion;
-    //private Tipo tipo; TODO implementar en el futuro
+    private boolean tipo;
 
     public Publicacion() {
     }
 
-    public Publicacion(String titulo, String link_imagen, String descripcion, String fecha_finalizacion, String fecha_publicacion) {
+    public Publicacion(int pubId, String titulo, byte[] link_imagen, String descripcion, String fecha_finalizacion, String fecha_publicacion, boolean tipo) {
+        this.pubId = pubId;
         this.titulo = titulo;
         this.link_imagen = link_imagen;
         this.descripcion = descripcion;
         this.fecha_finalizacion = fecha_finalizacion;
         this.fecha_publicacion = fecha_publicacion;
+        this.tipo = tipo;
     }
 
-    public enum Tipo {
-        CONVOCATORIA,
-        ANUNCIO
+    public int getPubId() {
+        return pubId;
+    }
+
+    public boolean getTipo(){
+        return tipo;
     }
 
     public String getTitulo() {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getLink_imagen() {
+    public byte[] getLink_imagen() {
         return link_imagen;
-    }
-
-    public void setLink_imagen(String link_imagen) {
-        this.link_imagen = link_imagen;
     }
 
     public String getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
     public String getFecha_finalizacion() {
         return fecha_finalizacion;
     }
 
-    public void setFecha_finalizacion(String fecha_finalizacion) {
-        this.fecha_finalizacion = fecha_finalizacion;
-    }
-
     public String getFecha_publicacion() {
         return this.fecha_publicacion;
-    }
-
-    public void setFecha_publicacion(String fecha_publicacion) {
-        this.fecha_publicacion = fecha_publicacion;
     }
 
     @Override

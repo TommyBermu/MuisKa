@@ -36,9 +36,9 @@ public class User {
     private int id, carpeta;
     private String nombre, apellidos, email;
     private Cargo cargo;
-    private HashMap<String, Boolean> inscripciones;
-    private HashMap<String, Boolean> grupos;
-    private String profesion;
+    private HashSet<String> inscripciones;
+    private HashSet<String> grupos;
+    private String profesion; // esta para saber si ya tiene completa la info o no xd
 
     //appInfo
     private FragmentActivity context;
@@ -71,125 +71,91 @@ public class User {
         });
 
         try {
+            this.id = prefs.getInt("id", 0);
             this.email = prefs.getString("email", "No hay datos"); // si es null significa que está en la AuthActivity
             this.nombre = prefs.getString("name", "No hay datos");
             this.apellidos = prefs.getString("surname", "No hay datos");
             this.cargo = Cargo.valueOf(prefs.getString("cargo", "No hay datos"));
             this.carpeta = prefs.getInt("carpeta", 0);
+            this.context = context;
 
-            // el true o false es si fue aceptado o no (creo) xd
-            this.inscripciones = new HashMap<>();
-            for (String s: prefs.getStringSet("inscripciones", new HashSet<>()))
-                inscripciones.put(s, false); //TODO se coloca false por facilidad, pero toca ver si es true o false
+            this.inscripciones = new HashSet<>();
+            inscripciones.addAll(prefs.getStringSet("inscripciones", new HashSet<>()));
 
-            this.grupos = new HashMap<>();
-            for (String s: prefs.getStringSet("grupos", new HashSet<>()))
-                grupos.put(s, false);
+            this.grupos = new HashSet<>();
+            grupos.addAll(prefs.getStringSet("grupos", new HashSet<>()));
 
         } catch (NullPointerException | IllegalArgumentException ignore){}
-        this.context = context;
     }
 
-    /*
-
-    /**
-     * Constructor que se envía a firebase
-     * @param nombre nombre del usuario
-     * @param apellidos apellidos del usuario
-     * @param cargo cargo del usuario
-     * @param inscripciones inscripciones del usuario
-     * @param completeInfo si el usuario ha completado la información
-     /*
-    public User(String nombre, String apellidos, Cargo cargo, HashMap<String, Boolean> inscripciones, HashMap<String, Boolean> grupos, int carpeta, Boolean completeInfo, String email) {
-        this.nombre = nombre;
-        this.apellidos = apellidos;
-        this.cargo = cargo;
-        this.inscripciones = inscripciones;
-        this.grupos = grupos;
-        this.carpeta = carpeta;
-        this.completeInfo = completeInfo;
-        this.email = email;
+    public SharedPreferences getPrefs(){
+        return prefs;
     }
-    */
+
+    public ExecutorService getExecutor() {
+        return executor;
+    }
 
     public Connection getConnection(){
         return connection;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Cargo getCargo() {
         return cargo;
     }
 
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
-    }
-
     public String getNombre() {
         return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
     }
 
     public String getApellidos() {
         return apellidos;
     }
 
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
-    }
-
-    public HashMap<String, Boolean> getInscripciones() {
+    public HashSet<String>  getInscripciones() {
         return inscripciones;
     }
 
-    public void setInscripciones(HashMap<String, Boolean> inscripciones) {
-        this.inscripciones = inscripciones;
-    }
-
     public void addInscripcion(String titulo){
-        inscripciones.put(titulo, false);
+        inscripciones.add(titulo);
+
+        // se actualizan las preferencias
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putStringSet("inscripciones", inscripciones);
+        prefsEditor.apply();
     }
 
-    public HashMap<String, Boolean> getGrupos() {
+    public HashSet<String> getGrupos() {
         return grupos;
     }
 
-    public void setGrupos(HashMap<String, Boolean> grupos) {
-        this.grupos = grupos;
-    }
-
     public void addGrupo(String nombre) {
-        grupos.put(nombre, false);
+        grupos.add(nombre);
+
+        // se actualizan las preferencias
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putStringSet("grupos", grupos);
+        prefsEditor.apply();
     }
 
     public int getCarpeta() {
         return carpeta;
     }
 
-    public void setCarpeta(int carpeta) {
-        this.carpeta = carpeta;
-    }
-
     public String getEmail(){
         return email;
-    }
-
-    public void setEmail(String email){
-        this.email = email;
     }
 
     public String getProfesion() {
         return profesion;
     }
 
-    public void setProfesion(String profesion) {
-        this.profesion = profesion;
-    }
-
     public boolean isCompleteInfo(){
-        return getProfesion() != null;
+        return profesion != null;
     }
 
     public enum Cargo {
@@ -216,7 +182,7 @@ public class User {
     public void createUser(String name, String surname, Cargo cargo, String email) {
         final String TAG = "CreateUser:EmailPassword";
         executor.execute(()-> {
-            String consulta = "INSERT INTO Usuario (Nombre, Apellidos, Cargo, Email, nombrePadre, apellidosPadre, nombreMadre, apellidosMadre, fechaNacimiento, Profesion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String consulta = "INSERT INTO Usuario (Nombre, Apellidos, Cargo, Email) VALUES (?, ?, ?, ?)";
             try {
                 // Preparamos la actualización del registro
 
@@ -225,17 +191,12 @@ public class User {
                 crearUsuario.setString(2, surname);
                 crearUsuario.setString(3, cargo.toString());
                 crearUsuario.setString(4, email);
-                crearUsuario.setString(5, null);
-                crearUsuario.setString(6, null);
-                crearUsuario.setString(7, null);
-                crearUsuario.setString(8, null);
-                crearUsuario.setString(9, null);
-                crearUsuario.setString(10, null);
 
                 int filasAfectadas = crearUsuario.executeUpdate();
                 Log.i(TAG, "Usuario Creado");
                 //enviar un código de verificación al email
-                FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+                Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).sendEmailVerification();
+
             } catch (SQLException ex) {
                 Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
                 ex.printStackTrace();
@@ -256,7 +217,7 @@ public class User {
                         @Override
                         public void onSuccess(Void unused) {
                             executor.execute(()-> {
-                                String consulta = "DELETE FROM Usuario WHERE Email = ?";
+                                String consulta = "DELETE FROM Usuario WHERE Email like ?";
                                 try {
                                     // Preparamos la actualización del registro
 
@@ -294,7 +255,7 @@ public class User {
      */
     public void updateInfo(String nombres, String apellidos, String nameMadre, String surnameMadre, String namePadre, String surnamePadre, String fechaNacimiento, String prefesion){
         executor.execute(()-> {
-            String consulta = "UPDATE Usuario SET Nombre = ?, SET Apellidos = ?, SET nombrePadre = ?, SET apellidosPadre = ?, SET nombreMadre = ?, SET apellidosMadre = ?, SET fechaNacimiento = ?, SET Profesion = ? WHERE Email = ?";
+            String consulta = "UPDATE Usuario SET Nombre = ?, SET Apellidos = ?, SET nombrePadre = ?, SET apellidosPadre = ?, SET nombreMadre = ?, SET apellidosMadre = ?, SET fechaNacimiento = ?, SET Profesion = ? WHERE Email like ?";
             try {
                 // Preparamos la actualización del registro
                 PreparedStatement actUsuario = connection.prepareStatement(consulta);
@@ -306,7 +267,7 @@ public class User {
                 actUsuario.setString(6, surnameMadre);
                 actUsuario.setString(7, fechaNacimiento);
                 actUsuario.setString(8, prefesion);
-                actUsuario.setString(9, mAuth.getCurrentUser().getEmail());
+                actUsuario.setString(9, Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
 
                 int filasAfectadas = actUsuario.executeUpdate();
             } catch (SQLException ex) {
@@ -338,7 +299,7 @@ public class User {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+                    if (!Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).isEmailVerified()) {
                         //lo mismo, sale que puede ser NULL porque puede estar registrado con telefono, pero eso no está implementado.
                         Log.w(TAG, "Email is not verified");
                         Toast.makeText(context, "El correo no está verificado", Toast.LENGTH_SHORT).show();
@@ -353,7 +314,7 @@ public class User {
                         try {
                             // Preparamos la actualización del registro
                             PreparedStatement getUsuario = connection.prepareStatement(consulta);
-                            getUsuario.setString(1, mAuth.getCurrentUser().getEmail());
+                            getUsuario.setString(1, Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
 
                             ResultSet rs = getUsuario.executeQuery(consulta);
                             if(rs.next()) {
@@ -384,12 +345,13 @@ public class User {
     public void agregarPreferencias(@NonNull ResultSet rs) throws SQLException {
 
         SharedPreferences.Editor prefsEditor = prefs.edit();
-
+        prefsEditor.putInt("id", rs.getInt("idUsiario"));
+        prefsEditor.putInt("carpeta", rs.getInt("Carpeta_idCarpeta"));
         prefsEditor.putString("name", rs.getString("Nombre"));
         prefsEditor.putString("surname", rs.getString("Apellidos"));
         prefsEditor.putString("cargo", rs.getString("Cargo"));
+
         prefsEditor.putString("email", Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
-        prefsEditor.putInt("carpeta", rs.getInt("Carpeta_idCarpeta"));
         prefsEditor.putBoolean("completeInfo", isCompleteInfo());
 
         /* TODO para lueguito (se tiene que colocar las tablas muchos a muchos en las preferencias) :d

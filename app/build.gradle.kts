@@ -52,4 +52,5 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.google.firebase.analytics)
     implementation(files("libs/mysql-connector-java-5.1.6-bin.jar"))
+    implementation (libs.github.glide)
 }

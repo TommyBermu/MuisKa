@@ -15,6 +15,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +29,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.muiska.clases.Publicacion;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.muiska.clases.User;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,6 +48,9 @@ public class CreatePublishFragment extends Fragment {
     private String end_date;
     private TextView show_date;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+
+    private User usuario;
+
     public CreatePublishFragment() {
         // Required empty public constructor
     }
@@ -54,6 +63,8 @@ public class CreatePublishFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        usuario = ((MainActivity) requireActivity()).getUsuario();
 
         title = view.findViewById(R.id.title);
         description = view.findViewById(R.id.description);
@@ -73,13 +84,10 @@ public class CreatePublishFragment extends Fragment {
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
                 if (imageUri != null && !title.getText().toString().isEmpty() && !description.getText().toString().isEmpty() && end_date != null)
-                    uploadTofirebase(imageUri);
+                    crearPublicacion(imageUri, title.getText().toString(), description.getText().toString(), end_date);
                 else
                     Toast.makeText(getContext(), "Please select an image or fill all the fields", Toast.LENGTH_SHORT).show();
-
-                 */
             }
         });
 
@@ -131,44 +139,27 @@ public class CreatePublishFragment extends Fragment {
                 }
             });
 
-    /*
-    private void uploadTofirebase(Uri imageUri){
-        final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
-        fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        SimpleDateFormat sdf_start = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.US);
-                        String modelId = root.push().getKey();
-                        assert modelId != null;
+    private void crearPublicacion(Uri imageUri, String titulo, String descripcion, String endDate){
+        usuario.getExecutor().execute(() -> {
+            // TODO hay que crear para subir un anuncio porque solo se creo el metodo para subir una convocatoria
+            String consulta = "CALL subirConvocatoria()";
+            try (PreparedStatement subirPublicacion = usuario.getConnection().prepareStatement(consulta)) {
 
-                        root.child(modelId).setValue(new Publicacion(
-                                title.getText().toString(),
-                                uri.toString(),
-                                description.getText().toString(),
-                                end_date,
-                                sdf_start.format(new Date()))).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Toast.makeText(getContext(), "Publicación creada", Toast.LENGTH_SHORT).show();
-                                        imageButton.setImageResource(R.drawable.baseline_add_photo_alternate_270_p);
-                                        title.setText("");
-                                        description.setText("");
-                            }
-                        });
-                    }
-                });
+                //se agrega a la base de datos SQL
+                subirPublicacion.setInt(1, usuario.getId()); // TODO editar para hacer la consulta xd. esq me tengo que ir D:
+
+                int filasAfectadas = subirPublicacion.executeUpdate();
+
+                Toast.makeText(getContext(), "Publicación creada", Toast.LENGTH_SHORT).show();
+                imageButton.setImageResource(R.drawable.baseline_add_photo_alternate_270_p);
+                title.setText("");
+                description.setText("");
+                Log.i("CONSULTA", "la consutla se realizo con exito");
+
+            } catch (SQLException ex) {
+                Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
+                ex.printStackTrace();
             }
         });
-    }
-
-     */
-
-    private String getFileExtension(Uri uri){
-        ContentResolver cr = requireActivity().getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cr.getType(uri));
     }
 }

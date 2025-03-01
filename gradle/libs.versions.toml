@@ -2,6 +2,7 @@
 agp = "8.8.2"
 firebaseBom = "33.10.0"
 firebaseCore = "21.1.1"
+glideVersion = "4.14.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -20,6 +21,7 @@ firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-core = { module = "com.google.firebase:firebase-core", version.ref = "firebaseCore" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

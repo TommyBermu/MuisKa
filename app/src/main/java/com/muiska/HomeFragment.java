@@ -1,10 +1,7 @@
 package com.muiska;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -13,22 +10,26 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.muiska.clases.Publicacion;
 import com.muiska.clases.Adapters.PublicacionAdapter;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
 import com.muiska.clases.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.Date;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment implements RecyclerViewClickListener {
@@ -58,34 +59,25 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
         adapter = new PublicacionAdapter(publicaciones, requireActivity(), this);
         recyclerView.setAdapter(adapter);
 
-        /*
-        root.child("publications").addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    Publicacion publicacion = dataSnapshot.getValue(Publicacion.class);
-                    publicaciones.add(publicacion);
-                    Collections.sort(publicaciones);
-                }
-                adapter.notifyDataSetChanged();
-            }
+        fetch();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-
-         */
+        // TODO crear un boton para actualizar el feed y que llame a la funcion fetch()
     }
 
     @Override
     public void onItemCliked(int position) {
         String titulo = publicaciones.get(position).getTitulo();
+        boolean tipo = publicaciones.get(position).getTipo();
 
-        if (usuario.getInscripciones().containsKey(titulo)) {
-            Toast.makeText(requireActivity(), "Ya te has inscrito en: " + titulo, Toast.LENGTH_SHORT).show();// si titulo no está en el keyset de inscripciones
+        if (!tipo) { // vamos a coger al anuncio como false, osea el tipo, no que sea falso o algo asi xd
+            return; // entones si es un anuncio pues que no pase nada
+        }
+
+        if (usuario.getInscripciones().contains(titulo)) {
+            Toast.makeText(requireActivity(), "Ya te has inscrito en: " + titulo, Toast.LENGTH_SHORT).show();// si titulo no está en el set de inscripciones
             return;
         }
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_confirm, null);
@@ -99,50 +91,25 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String, Object> mapa = new HashMap<>();
-                mapa.put("email", usuario.getEmail());
-                mapa.put("name", usuario.getNombre() + " " + usuario.getApellidos());
-                mapa.put("accepted", null); // null porque, aunque se incriba, no significa que sea aceptado
+                usuario.getExecutor().execute(() -> {
+                    String consulta = "CALL PeticionIngresoConvocatoria(?, ?, ?)";
+                    try (PreparedStatement inscribir = usuario.getConnection().prepareStatement(consulta)) {
 
+                        //se agrega a la base de datos SQL
+                        inscribir.setInt(1, usuario.getId());
+                        inscribir.setString(2, "nulo por ahora xd"); // TODO link de la carta
+                        inscribir.setInt(3, publicaciones.get(position).getPubId());
+                        int filasAfectadas = inscribir.executeUpdate();
 
-                /*
-                String path = root.push().getKey();
-                assert path != null;
+                        usuario.addInscripcion(titulo);
+                        Toast.makeText(requireActivity(), "Te has inscrito en: " + titulo, Toast.LENGTH_SHORT).show();
+                        Log.i("CONSULTA", "la consutla se realizo con exito");
 
-                mapa.put("ref", path);
-
-                // se agrega la inscripcion a la convocatoria en la base de datos
-                root.child("requests-convs").child(titulo).child(path).setValue(mapa).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-
-                            // primero se agrega a las preferencias que ya está inscrito en la convocatoria
-                            SharedPreferences prefs = requireActivity().getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
-                            SharedPreferences.Editor prefsEditor = prefs.edit();
-                            HashSet<String> set = new HashSet<>(prefs.getStringSet("inscripciones", new HashSet<>()));
-                            set.add(titulo);
-                            prefsEditor.putStringSet("inscripciones", set);
-                            prefsEditor.apply();
-
-                            // luego se actualiza en el firebase un atributo del ususario que diga en qué convocatorias está inscrito
-                            Map<String, HashMap<String, Boolean>> convs = new HashMap<>(); // es un mapa que guarda mapas de convocatorias (el equivalente al atributo inscipciones del User)
-                            HashMap<String, Boolean> inscripciones = new HashMap<>();
-                            inscripciones.put(titulo,false);
-                            convs.put("inscripciones", inscripciones);
-                            db.collection("users").document(usuario.getEmail()).set(convs, SetOptions.merge());
-
-                            //luego el hashmap del usuario mismo
-                            usuario.addInscripcion(titulo); //TODO sirve, pero como se crea el usuario según las preferencias, pues al cerrar sesión se borra el hashmap xd
-
-                            Toast.makeText(requireActivity(), "Te has inscrito en: " + titulo, Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(requireActivity(), "Algo ha salido mal: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                    } catch (SQLException ex) {
+                        Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
+                        ex.printStackTrace();
                     }
                 });
-
-                 */
                 dialog.cancel();
             }
         });
@@ -157,6 +124,36 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
 
     @Override
     public void onItemLongCliked(int position) {
-        //TODO implementar algo xd
+        //TODO implementar lo de des-inscribirse
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void fetch(){
+        usuario.getExecutor().execute(() -> {
+            // TODO solo se consulta en la tabla de publicacion porq es la unica con datos que se muestran, pero hay que tambien buscar en las otras tablas
+            String consulta = "SELECT * FROM Publicacion";
+            try (PreparedStatement fetch = usuario.getConnection().prepareStatement(consulta)) {
+
+                ResultSet rs = fetch.executeQuery();
+
+                while(rs.next()){
+                    publicaciones.add(new Publicacion(
+                            rs.getInt("idPublicacion"),
+                            rs.getString("Titulo"),
+                            rs.getBytes("Imagen"),
+                            rs.getString("Descripcion"),
+                            rs.getString("FechaFinalizacion"),
+                            rs.getString("FechaPublicacion"),
+                            rs.getBoolean("Tipo")
+                    ));
+                    Collections.sort(publicaciones);
+                    adapter.notifyDataSetChanged();
+                }
+            } catch (SQLException ex) {
+                Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
+                ex.printStackTrace();
+            }
+        });
+
     }
 }
