@@ -13,13 +13,8 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.pueblosdb.ProfileUserFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile_user" />
-    <fragment
-        android:id="@+id/marketFragment"
-        android:name="com.example.pueblosdb.MarketFragment"
-        android:label="fragment_market"
-        tools:layout="@layout/fragment_market" />
+        android:label="fragment_profile_comu"
+        tools:layout="@layout/fragment_profile_comu" />
     <fragment
         android:id="@+id/libraryFragment"
         android:name="com.example.pueblosdb.LibraryFragment"
@@ -39,11 +34,6 @@
             android:id="@+id/action_groupsFragment_to_joinGroupFragment"
             app:destination="@id/joinGroupFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/financeFragment"
-        android:name="com.example.pueblosdb.FinanceFragment"
-        android:label="fragment_finance"
-        tools:layout="@layout/fragment_finance" />
     <fragment
         android:id="@+id/publishFragment"
         android:name="com.example.pueblosdb.CreatePublishFragment"

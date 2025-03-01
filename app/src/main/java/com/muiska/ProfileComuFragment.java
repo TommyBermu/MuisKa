@@ -157,12 +157,9 @@ public class ProfileComuFragment extends Fragment {
                     sexo = "Masculino";
                 }
 
-                if (usuario.getCargo().toString().equals(User.Cargo.EXTERNO.toString())) {
-                    usuario.updateInfo(nombre, apellidos);
-
-                } else if (!nombreMadre.isEmpty() && !apellidosMadre.isEmpty() && !nombrePadre.isEmpty() && !apellidosPadre.isEmpty() && birthday != null && !sexo.isEmpty() && clan != 0 && !profesion.isEmpty()) {
-                    usuario.updateInfo(nombre, apellidos, nombreMadre, apellidosMadre, nombrePadre, apellidosPadre, birthday, sexo, clan, profesion);
-
+                if (!nombreMadre.isEmpty() && !apellidosMadre.isEmpty() && !nombrePadre.isEmpty() && !apellidosPadre.isEmpty() && birthday != null && !sexo.isEmpty() && !profesion.isEmpty()) {
+                    usuario.updateInfo(nombre, apellidos, nombreMadre, apellidosMadre, nombrePadre, apellidosPadre, birthday, profesion);
+                    // TODO quitar el clan
                 } else {
                     Toast.makeText(requireActivity(), "Debes llenar y/o seleccionar todos los campos", Toast.LENGTH_SHORT).show();
                 }

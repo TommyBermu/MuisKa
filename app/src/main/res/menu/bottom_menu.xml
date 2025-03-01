@@ -5,9 +5,9 @@
         android:icon="@drawable/baseline_home_24"
         android:title="Home"/>
     <item
-        android:id="@+id/market_bottom_menu"
-        android:icon="@drawable/baseline_storefront_24"
-        android:title="Tienda"/>
+        android:id="@+id/groups_bottom_menu"
+        android:icon="@drawable/baseline_groups_24"
+        android:title="Grupos"/>
     <item
         android:id="@+id/library_bottom_menu"
         android:icon="@drawable/baseline_menu_book_24"

@@ -17,11 +17,6 @@ import com.muiska.clases.Group;
 import com.muiska.clases.Adapters.GroupAdapter;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
 import com.muiska.clases.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -29,8 +24,6 @@ public class GroupsFragment extends Fragment implements RecyclerViewClickListene
     private ArrayList<Group> grupos;
     private GroupAdapter adapter;
     private User usuario;
-
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference();
 
     public GroupsFragment() {
         // Required empty public constructor
@@ -55,6 +48,8 @@ public class GroupsFragment extends Fragment implements RecyclerViewClickListene
         adapter = new GroupAdapter(grupos, this);
         recyclerView.setAdapter(adapter);
 
+
+        /*
         root.child("groups").addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
             @Override
@@ -69,6 +64,8 @@ public class GroupsFragment extends Fragment implements RecyclerViewClickListene
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
+
+         */
     }
 
     @Override

@@ -1,8 +1,12 @@
 package com.muiska;
+import android.credentials.GetCredentialRequest;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.GetPasswordOption;
+import androidx.credentials.GetPublicKeyCredentialOption;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -59,7 +63,7 @@ public class RegisterFragment extends Fragment {
                     if (Email.isEmpty() || password.isEmpty() || name.isEmpty() || surname.isEmpty())
                         throw new IllegalArgumentException("Requiere rellenar todos los campos");
 
-                    //se crea el usuario
+                    //se crea el usuario TODO ver eso de credential manager
                     FirebaseAuth.getInstance().createUserWithEmailAndPassword(Email, password).addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {

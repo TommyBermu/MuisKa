@@ -12,10 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.muiska.R;
 import com.muiska.clases.FolderChange;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
@@ -23,7 +19,6 @@ public class FolderChangeAdapter extends RecyclerView.Adapter<FolderChangeAdapte
     private ArrayList<FolderChange> mChanges;
     private RecyclerViewClickListener listener;
     private Context mContext;
-    private final FirebaseFirestore db  = FirebaseFirestore.getInstance();
 
     public FolderChangeAdapter(ArrayList<FolderChange> mChanges, Context context, RecyclerViewClickListener listener) {
         this.mChanges = mChanges;
@@ -82,6 +77,7 @@ public class FolderChangeAdapter extends RecyclerView.Adapter<FolderChangeAdapte
 
     @Override
     public void onItemLongCliked(int position) {}
+
 
     private void actualizarPeticion(boolean accepted, @NonNull FolderChange folderChange) {
         DatabaseReference root = FirebaseDatabase.getInstance().getReference();

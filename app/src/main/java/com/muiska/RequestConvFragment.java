@@ -18,11 +18,6 @@ import android.widget.Toast;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
 import com.muiska.clases.Adapters.StringAdapter;
 import com.muiska.clases.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -31,7 +26,6 @@ public class RequestConvFragment extends Fragment implements RecyclerViewClickLi
     private StringAdapter adapter;
     private User usuario;
 
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference();
 
     public RequestConvFragment() {
         // Required empty public constructor
@@ -55,6 +49,8 @@ public class RequestConvFragment extends Fragment implements RecyclerViewClickLi
         adapter = new StringAdapter(convs, this);
         recyclerView.setAdapter(adapter);
 
+
+        /*
         root.child("requests-convs").addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
             @Override
@@ -68,6 +64,8 @@ public class RequestConvFragment extends Fragment implements RecyclerViewClickLi
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
+
+         */
     }
 
     @Override

@@ -10,11 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+// import com.bumptech.glide.Glide;
 import com.muiska.R;
 import com.muiska.clases.Publicacion;
 
 import java.util.ArrayList;
+
 
 public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.PublicacionViewHolder> implements RecyclerViewClickListener{
     private ArrayList<Publicacion> mPublicaciones;

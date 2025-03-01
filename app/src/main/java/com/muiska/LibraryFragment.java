@@ -14,11 +14,6 @@ import com.muiska.clases.Adapters.RecyclerViewClickListener;
 import com.muiska.clases.Libro;
 import com.muiska.clases.Adapters.LibroAdapter;
 import com.muiska.clases.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class LibraryFragment extends Fragment implements RecyclerViewClickListener {
@@ -26,7 +21,6 @@ public class LibraryFragment extends Fragment implements RecyclerViewClickListen
     private LibroAdapter adapter;
     private User usuario;
 
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference();
     public LibraryFragment() {
         // Required empty public constructor
     }
@@ -49,6 +43,7 @@ public class LibraryFragment extends Fragment implements RecyclerViewClickListen
         adapter = new LibroAdapter(libros, this); //TODO
         recyclerView.setAdapter(adapter);
 
+        /*
         root.child("library").addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
             @Override
@@ -63,6 +58,8 @@ public class LibraryFragment extends Fragment implements RecyclerViewClickListen
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
+
+         */
     }
 
     @Override

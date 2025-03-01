@@ -24,13 +24,6 @@ import com.muiska.clases.Adapters.RecyclerViewClickListener;
 import com.muiska.clases.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,9 +35,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
     private ArrayList<Publicacion> publicaciones;
     private PublicacionAdapter adapter;
     private User usuario;
-
-    private final FirebaseFirestore db  = FirebaseFirestore.getInstance();
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -68,6 +58,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
         adapter = new PublicacionAdapter(publicaciones, requireActivity(), this);
         recyclerView.setAdapter(adapter);
 
+        /*
         root.child("publications").addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
             @Override
@@ -83,6 +74,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
+
+         */
     }
 
     @Override
@@ -111,6 +104,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
                 mapa.put("name", usuario.getNombre() + " " + usuario.getApellidos());
                 mapa.put("accepted", null); // null porque, aunque se incriba, no significa que sea aceptado
 
+
+                /*
                 String path = root.push().getKey();
                 assert path != null;
 
@@ -146,6 +141,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
                         }
                     }
                 });
+
+                 */
                 dialog.cancel();
             }
         });

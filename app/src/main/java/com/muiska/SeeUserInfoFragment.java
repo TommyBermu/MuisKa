@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentResultListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.muiska.clases.User;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SeeUserInfoFragment extends Fragment {
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     FragmentActivity context;
     String Email;
     TextView tv_name, tv_surname, tv_email, tv_name_madre, tv_surname_madre, tv_name_padre, tv_surname_padre, tv_cumpleanios, tv_sexo, tv_clan, tv_cargo;
@@ -57,6 +53,8 @@ public class SeeUserInfoFragment extends Fragment {
         tv_clan = view.findViewById(R.id.viewClan);
         tv_cargo = view.findViewById(R.id.profession);
 
+
+        /*
         db.collection("users").document(Email).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -82,5 +80,7 @@ public class SeeUserInfoFragment extends Fragment {
                 });
             }
         });
+
+         */
     }
 }

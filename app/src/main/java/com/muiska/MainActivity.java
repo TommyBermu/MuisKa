@@ -16,13 +16,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.muiska.clases.SQLConnection;
 import com.muiska.clases.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -66,10 +66,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (usuario.getCargo().toString().equals(User.Cargo.ADMIN.toString())){
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.admin_nav_menu);
-        }
-        if (usuario.getCargo().toString().equals(User.Cargo.EXTERNO.toString())){
+        } else if (usuario.getCargo().toString().equals(User.Cargo.COMUNERO.toString())){
             navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.ext_nav_menu);
+            navigationView.inflateMenu(R.menu.nav_menu);
+        } else if (usuario.getCargo().toString().equals(User.Cargo.PREFERENTE.toString())){
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.nav_menu);
+        } else if (usuario.getCargo().toString().equals(User.Cargo.LIBRERO.toString())){
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.nav_menu);
+        } else if (usuario.getCargo().toString().equals(User.Cargo.GESTOR_REDES.toString())){
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.nav_menu);
+        } else if (usuario.getCargo().toString().equals(User.Cargo.GESTOR_GRUPO.toString())){
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.nav_menu);
+        } else if (usuario.getCargo().toString().equals(User.Cargo.CREAODR_GRUPOS.toString())){
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.nav_menu);
         }
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -97,18 +111,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             int id = item.getItemId();
             if(id == R.id.home_bottom_menu){
                 replaceFragment(new HomeFragment());
-
-            } else if (id == R.id.market_bottom_menu){
-                replaceFragment(new MarketFragment());
+            } else if (id == R.id.groups_bottom_menu){
+                replaceFragment(new GroupsFragment());
 
             } else if (id == R.id.library_bottom_menu){
                 replaceFragment(new LibraryFragment());
 
             } else if (id == R.id.profile_bottom_menu){
-                if (usuario.getCargo().toString().equals(User.Cargo.EXTERNO.toString()))
-                    replaceFragment(new ProfileUserFragment());
-                else
-                    replaceFragment(new ProfileComuFragment());
+                replaceFragment(new ProfileComuFragment());
+
             }
             return true;
         });
@@ -122,8 +133,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             replaceFragment(new ChangeFolderFragment());
         } else if (id == R.id.group_join_menu && canAccess()) {
             replaceFragment(new GroupsFragment());
-        } else if (id == R.id.finance_status_menu && canAccess()) {
-            replaceFragment(new FinanceFragment());
         } else if (id == R.id.convs_requests_menu) {
             replaceFragment(new RequestConvFragment());
         } else if (id == R.id.groups_requests_menu) {
@@ -176,6 +185,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public User getUsuario(){
         return usuario;
     }
-
-    // ESTE COMENTARIO ES DE PRUEBA PORQUE ESTOY JUGANDO CON GITHUB :D
 }

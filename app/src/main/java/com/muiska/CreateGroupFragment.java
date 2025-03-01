@@ -26,11 +26,6 @@ import android.widget.Toast;
 
 import com.muiska.clases.Group;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,8 +36,6 @@ public class CreateGroupFragment extends Fragment {
     private Uri imageUri;
     private EditText title, description;
 
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference("groups");
-    private final StorageReference reference = FirebaseStorage.getInstance().getReference("groups_posters");
 
     public CreateGroupFragment() {
         // Required empty public constructor
@@ -75,10 +68,13 @@ public class CreateGroupFragment extends Fragment {
         createGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 if (!title.getText().toString().isEmpty() && !description.getText().toString().isEmpty() && imageUri != null)
                     uploadTofirebase(imageUri);
                 else
                     Toast.makeText(getContext(), "Please select an image or fill all the fields", Toast.LENGTH_SHORT).show();
+
+                 */
             }
         });
     }
@@ -95,6 +91,7 @@ public class CreateGroupFragment extends Fragment {
                     }
                 }
             });
+    /*
 
     private void uploadTofirebase(Uri imageUri){
         StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
@@ -125,6 +122,8 @@ public class CreateGroupFragment extends Fragment {
             }
         });
     }
+
+      */
 
     private String getFileExtension(Uri uri){
         ContentResolver cr = requireActivity().getContentResolver();

@@ -18,32 +18,35 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class User {
     // attributes
-    private String nombre;
-    private String apellidos;
+    private int id, carpeta;
+    private String nombre, apellidos, email;
     private Cargo cargo;
     private HashMap<String, Boolean> inscripciones;
     private HashMap<String, Boolean> grupos;
-    private String carpeta;
-    private Boolean completeInfo;
-    private String email;
+    private String profesion;
 
     //appInfo
     private FragmentActivity context;
     private FirebaseAuth mAuth;
-    private FirebaseUser fUser;
     private SharedPreferences prefs;
-    private FirebaseFirestore db;
+    private Connection connection;
+    private SQLConnection sqlConnection;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     /**
      * empty constructor (required for Firestore)
@@ -56,26 +59,38 @@ public class User {
      */
     public User(@NonNull FragmentActivity context){
         mAuth = FirebaseAuth.getInstance();
-        fUser = mAuth.getCurrentUser();
         prefs = context.getSharedPreferences(context.getString(R.string.prefs_file), MODE_PRIVATE);
-        db = FirebaseFirestore.getInstance();
+
+        sqlConnection = new SQLConnection();
+        executor.execute(() -> {
+            connection = sqlConnection.conectar();
+            if (connection == null){
+                Toast.makeText(context, "Error al conectar, intenta más tarde", Toast.LENGTH_SHORT).show();
+                logOut();
+            }
+        });
 
         try {
-            this.email = fUser.getEmail(); // si es null significa que está en la AuthActivity
+            this.email = prefs.getString("email", "No hay datos"); // si es null significa que está en la AuthActivity
             this.nombre = prefs.getString("name", "No hay datos");
             this.apellidos = prefs.getString("surname", "No hay datos");
             this.cargo = Cargo.valueOf(prefs.getString("cargo", "No hay datos"));
-            this.completeInfo = prefs.getBoolean("completeInfo", false);
-            this.carpeta = prefs.getString("carpeta", null);
+            this.carpeta = prefs.getInt("carpeta", 0);
+
+            // el true o false es si fue aceptado o no (creo) xd
             this.inscripciones = new HashMap<>();
             for (String s: prefs.getStringSet("inscripciones", new HashSet<>()))
                 inscripciones.put(s, false); //TODO se coloca false por facilidad, pero toca ver si es true o false
+
             this.grupos = new HashMap<>();
             for (String s: prefs.getStringSet("grupos", new HashSet<>()))
                 grupos.put(s, false);
+
         } catch (NullPointerException | IllegalArgumentException ignore){}
         this.context = context;
     }
+
+    /*
 
     /**
      * Constructor que se envía a firebase
@@ -84,8 +99,8 @@ public class User {
      * @param cargo cargo del usuario
      * @param inscripciones inscripciones del usuario
      * @param completeInfo si el usuario ha completado la información
-     */
-    public User(String nombre, String apellidos, Cargo cargo, HashMap<String, Boolean> inscripciones, HashMap<String, Boolean> grupos, String carpeta, Boolean completeInfo, String email) { //TODO si es externo no debería tener carpeta
+     /*
+    public User(String nombre, String apellidos, Cargo cargo, HashMap<String, Boolean> inscripciones, HashMap<String, Boolean> grupos, int carpeta, Boolean completeInfo, String email) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.cargo = cargo;
@@ -95,7 +110,11 @@ public class User {
         this.completeInfo = completeInfo;
         this.email = email;
     }
+    */
 
+    public Connection getConnection(){
+        return connection;
+    }
 
     public Cargo getCargo() {
         return cargo;
@@ -145,20 +164,12 @@ public class User {
         grupos.put(nombre, false);
     }
 
-    public String getCarpeta() {
+    public int getCarpeta() {
         return carpeta;
     }
 
-    public void setCarpeta(String carpeta) {
+    public void setCarpeta(int carpeta) {
         this.carpeta = carpeta;
-    }
-
-    public Boolean isCompleteInfo() {
-        return completeInfo;
-    }
-
-    public void setCompleteInfo(Boolean completeInfo) {
-        this.completeInfo = completeInfo;
     }
 
     public String getEmail(){
@@ -169,10 +180,26 @@ public class User {
         this.email = email;
     }
 
+    public String getProfesion() {
+        return profesion;
+    }
+
+    public void setProfesion(String profesion) {
+        this.profesion = profesion;
+    }
+
+    public boolean isCompleteInfo(){
+        return getProfesion() != null;
+    }
+
     public enum Cargo {
-        EXTERNO,
         COMUNERO,
-        ADMIN
+        ADMIN,
+        PREFERENTE,
+        LIBRERO,
+        GESTOR_REDES,
+        GESTOR_GRUPO,
+        CREAODR_GRUPOS
     }
 
     public void inscribirse(){
@@ -184,22 +211,34 @@ public class User {
      * @param cargo el cargo
      * @param name el nombre
      * @param surname el apellido
-     * @param Email el email
+     * @param email el email
      */
-    public void createUser(Cargo cargo, String name, String surname, String Email) {
+    public void createUser(String name, String surname, Cargo cargo, String email) {
         final String TAG = "CreateUser:EmailPassword";
-        db.collection("users").document(Email).set(new User(name, surname, cargo, new HashMap<>(), new HashMap<>(), null, false, Email)).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    Log.d(TAG, "onSucces: docuemnto creado correctamente");
-                    //enviar un código de verificación al email
-                    FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
-                    logOut();
-                } else {
-                    fUser.delete();
-                    Log.e(TAG, "onFailure, no se pudo crear el documento, se elimina el usuario : " + Objects.requireNonNull(task.getException()).getMessage());
-                }
+        executor.execute(()-> {
+            String consulta = "INSERT INTO Usuario (Nombre, Apellidos, Cargo, Email, nombrePadre, apellidosPadre, nombreMadre, apellidosMadre, fechaNacimiento, Profesion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try {
+                // Preparamos la actualización del registro
+
+                PreparedStatement crearUsuario = connection.prepareStatement(consulta);
+                crearUsuario.setString(1, name);
+                crearUsuario.setString(2, surname);
+                crearUsuario.setString(3, cargo.toString());
+                crearUsuario.setString(4, email);
+                crearUsuario.setString(5, null);
+                crearUsuario.setString(6, null);
+                crearUsuario.setString(7, null);
+                crearUsuario.setString(8, null);
+                crearUsuario.setString(9, null);
+                crearUsuario.setString(10, null);
+
+                int filasAfectadas = crearUsuario.executeUpdate();
+                Log.i(TAG, "Usuario Creado");
+                //enviar un código de verificación al email
+                FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+            } catch (SQLException ex) {
+                Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
+                ex.printStackTrace();
             }
         });
     }
@@ -209,14 +248,28 @@ public class User {
      * @param credential credencial para reautentificar el usuario
      */
     public void deleteUser(AuthCredential credential){
-        fUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+        Objects.requireNonNull(mAuth.getCurrentUser()).reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
-                    fUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    mAuth.getCurrentUser().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            db.collection("users").document(email).delete();
+                            executor.execute(()-> {
+                                String consulta = "DELETE FROM Usuario WHERE Email = ?";
+                                try {
+                                    // Preparamos la actualización del registro
+
+                                    PreparedStatement delUsuario = connection.prepareStatement(consulta);
+                                    delUsuario.setString(1, mAuth.getCurrentUser().getEmail());
+
+                                    int filasAfectadas = delUsuario.executeUpdate();
+                                } catch (SQLException ex) {
+                                    Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
+                                    ex.printStackTrace();
+                                }
+                            });
+
                             Toast.makeText(context, "Cuenta eliminada", Toast.LENGTH_SHORT).show();
                             logOut();
                         }
@@ -229,59 +282,38 @@ public class User {
     }
 
     /**
-     * Actualiza la información del usuario externo en Firestore
-     * @param nombres nombres
-     * @param apellidos apellidos
-     */
-    public void updateInfo(String nombres, String apellidos){
-        DocumentReference docRef = db.collection("users").document(email);
-        docRef.update("nombre", nombres);
-        docRef.update("apellidos", apellidos);
-        prefs.edit().putString("name", nombres).putString("surname", apellidos).apply();
-        setNombre(nombres);
-        setApellidos(apellidos);
-    }
-
-    /**
      * Actualiza la información del usuario comunero en Firestore
      * @param nombres nombres
      * @param apellidos apellidos
-     * @param naneMadre nombre de la madre
+     * @param nameMadre nombre de la madre
      * @param surnameMadre apellido de la madre
      * @param namePadre nombre del padre
      * @param surnamePadre apellido del padre
      * @param fechaNacimiento fecha de nacimiento
-     * @param sexo sexo
-     * @param clan clan
      * @param prefesion profesion
      */
-    public void updateInfo(String nombres, String apellidos, String naneMadre, String surnameMadre, String namePadre, String surnamePadre, String fechaNacimiento, String sexo, int clan, String prefesion){
+    public void updateInfo(String nombres, String apellidos, String nameMadre, String surnameMadre, String namePadre, String surnamePadre, String fechaNacimiento, String prefesion){
+        executor.execute(()-> {
+            String consulta = "UPDATE Usuario SET Nombre = ?, SET Apellidos = ?, SET nombrePadre = ?, SET apellidosPadre = ?, SET nombreMadre = ?, SET apellidosMadre = ?, SET fechaNacimiento = ?, SET Profesion = ? WHERE Email = ?";
+            try {
+                // Preparamos la actualización del registro
+                PreparedStatement actUsuario = connection.prepareStatement(consulta);
+                actUsuario.setString(1, nombres);
+                actUsuario.setString(2, apellidos);
+                actUsuario.setString(3, namePadre);
+                actUsuario.setString(4, surnamePadre);
+                actUsuario.setString(5, nameMadre);
+                actUsuario.setString(6, surnameMadre);
+                actUsuario.setString(7, fechaNacimiento);
+                actUsuario.setString(8, prefesion);
+                actUsuario.setString(9, mAuth.getCurrentUser().getEmail());
 
-        Map<String, Object> info = new HashMap<>();
-        info.put("nombre Madre", naneMadre);
-        info.put("apellidos Madre", surnameMadre);
-        info.put("nombre Padre", namePadre);
-        info.put("apellidos Padre", surnamePadre);
-        info.put("fecha de nacimiento", fechaNacimiento);
-        info.put("sexo", sexo);
-        info.put("clan", clan);
-        info.put("profesion", prefesion);
-
-        if (completeInfo){
-            db.collection("info_comunero").document(email).update(info).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    addInfo(info, nombres, apellidos);
-                }
-            });
-        } else {
-            db.collection("info_comunero").document(email).set(info).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    addInfo(info, nombres, apellidos);
-                }
-            });
-        }
+                int filasAfectadas = actUsuario.executeUpdate();
+            } catch (SQLException ex) {
+                Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
+                ex.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -298,6 +330,10 @@ public class User {
             return;
         }
 
+        // se desconecta porq en la otra activity se va a volver a conectar
+        sqlConnection.desconectar();
+        executor.shutdown();
+
         mAuth.signInWithEmailAndPassword(Email, Password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -306,26 +342,31 @@ public class User {
                         //lo mismo, sale que puede ser NULL porque puede estar registrado con telefono, pero eso no está implementado.
                         Log.w(TAG, "Email is not verified");
                         Toast.makeText(context, "El correo no está verificado", Toast.LENGTH_SHORT).show();
-                        mAuth.signOut();
+                        logOut();
                         return;
                     }
                     Log.d(TAG, "LogInWithEmailAndPassword: success");
-                    //a veces no se conecta pero es por el android studio xd
-                    db.collection("users").document(Email).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()){
-                                // si se recuperó el docuemto correctamente, agergar las preferencias e ir a la Main activity
+
+
+                    executor.execute(()-> {
+                        String consulta = "SELECT * FROM Usuario WHERE Email like ?";
+                        try {
+                            // Preparamos la actualización del registro
+                            PreparedStatement getUsuario = connection.prepareStatement(consulta);
+                            getUsuario.setString(1, mAuth.getCurrentUser().getEmail());
+
+                            ResultSet rs = getUsuario.executeQuery(consulta);
+                            if(rs.next()) {
+                                agregarPreferencias(rs);
                                 Log.d(TAG, "onSuccess: added Preferences");
-                                agregarPreferencias(task.getResult(), Email);
-                                Intent main = new Intent(context, MainActivity.class);
-                                context.startActivity(main);
+                                context.startActivity(new Intent(context, MainActivity.class));
+                            } else {
+                                Log.i("RESULTADO", "No hay resultados en la consulta");
                             }
-                            else {
-                                Log.e(TAG, "onFailure: Logging out", task.getException());
-                                Toast.makeText(context, "Error al iniciar sesión, verifique su conexión a internet o intente nuevamente", Toast.LENGTH_LONG).show();
-                                mAuth.signOut();
-                            }
+
+                        } catch (SQLException ex) {
+                            Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
+                            ex.printStackTrace();
                         }
                     });
                 } else {
@@ -336,44 +377,27 @@ public class User {
         });
     }
 
-    public void ApplogIn(){ // TODO log in con cuentas externas (GOOGLE, Facebook)
-
-    }
-
     /**
-     * Cierra sesión
-     */
-    public void logOut(){
-        final String TAG = "LogOut";
+     * Some minor methods
+      **/
 
-        prefs.edit().clear().apply();
-        //LoginManager.getInstance().logOut(); TODO hablilitar cuando se haga lo de facebook
-        FirebaseAuth.getInstance().signOut();
-        Intent auth = new Intent(context, AuthActivity.class);
-        context.startActivity(auth);
-        Log.d(TAG, "LogOut: success");
-    }
+    public void agregarPreferencias(@NonNull ResultSet rs) throws SQLException {
 
-    /** ** ** ** ** ** ** *
-     * Some minor methods *
-     * ** ** ** * ** ** **/
-
-    public void agregarPreferencias(@NonNull DocumentSnapshot document, String email) {
-        User user = document.toObject(User.class);
         SharedPreferences.Editor prefsEditor = prefs.edit();
-        assert user != null: "Usuario nulo D:";
 
-        prefsEditor.putString("name", user.getNombre());
-        prefsEditor.putString("surname", user.getApellidos());
-        prefsEditor.putString("cargo", user.getCargo().toString());
+        prefsEditor.putString("name", rs.getString("Nombre"));
+        prefsEditor.putString("surname", rs.getString("Apellidos"));
+        prefsEditor.putString("cargo", rs.getString("Cargo"));
+        prefsEditor.putString("email", Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
+        prefsEditor.putInt("carpeta", rs.getInt("Carpeta_idCarpeta"));
+        prefsEditor.putBoolean("completeInfo", isCompleteInfo());
+
+        /* TODO para lueguito (se tiene que colocar las tablas muchos a muchos en las preferencias) :d
         prefsEditor.putStringSet("inscripciones", user.getInscripciones().keySet());
         prefsEditor.putStringSet("grupos", user.getGrupos().keySet());
-        prefsEditor.putString("carpeta", user.getCarpeta());
-        prefsEditor.putBoolean("completeInfo", user.isCompleteInfo());
-        prefsEditor.putString("email", email);
 
-        if (!user.getCargo().equals(Cargo.EXTERNO) && user.isCompleteInfo()){
-            db.collection("info_comunero").document(email).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        if (user.isCompleteInfo()){
+            dv.collection("info_comunero").document(email).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     Map<String, Object> info = documentSnapshot.getData();
@@ -384,38 +408,27 @@ public class User {
                     prefsEditor.apply();
                 }
             });
-        }
+        }*/
         prefsEditor.apply();
     }
 
-    private void addInfo(@NonNull Map<String, Object> info, String nombres, String apellidos) {
-        //edita el documento
-        DocumentReference docRef = db.collection("users").document(email);
-        docRef.update("nombre", nombres);
-        docRef.update("apellidos", apellidos);
-        //edita las preferencias
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("name", nombres).putString("surname", apellidos);
-        for (String key : info.keySet()) {
-            editor.putString(key, "" + info.get(key));
-        }
-        //edita el objeto
-        setNombre(nombres);
-        setApellidos(apellidos);
-        if (!completeInfo){
-            docRef.update("completeInfo", true);
-            editor.putBoolean("completeInfo", true);
-            setCompleteInfo(true);
-        }
-        editor.apply();
-        Toast.makeText(context, "Datos guardados correctamente", Toast.LENGTH_SHORT).show();
+    /**
+     * Cierra sesión
+     */
+    public void logOut(){
+        sqlConnection.desconectar();
+        executor.shutdown();
+        prefs.edit().clear().apply();
+        mAuth.signOut();
+        context.startActivity(new Intent(context, AuthActivity.class));
+        Log.d("LOGOUT", "LogOut: success");
     }
 
     public void replaceFragment(Fragment fragment){
         context.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
 
-    public void replaceFragment(Fragment fragment, Bundle bundle){
+    public void replaceFragment(@NonNull Fragment fragment, Bundle bundle){
         fragment.setArguments(bundle);
         context.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }

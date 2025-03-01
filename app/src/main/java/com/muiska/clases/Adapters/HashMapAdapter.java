@@ -11,10 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.muiska.R;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +21,6 @@ public class HashMapAdapter extends RecyclerView.Adapter<HashMapAdapter.HashMapV
     private Context mContext;
     private Tipo tipo;
     private String folder;
-    private final FirebaseFirestore db  = FirebaseFirestore.getInstance();
 
     public HashMapAdapter(ArrayList<HashMap<String, Object>> mHashMaps, Context context, RecyclerViewClickListener listener, Tipo tipo, String folder) {
         this.mHashMaps = mHashMaps;

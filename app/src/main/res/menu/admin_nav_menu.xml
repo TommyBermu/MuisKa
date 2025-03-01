@@ -5,17 +5,11 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
-            android:title="General">
+            android:title="Info">
             <menu>
                 <item android:id="@+id/folder_change_menu"
                     android:icon="@drawable/baseline_folder_shared_24"
                     android:title="Cambio de Carpeta"/>
-                <item android:id="@+id/group_join_menu"
-                    android:icon="@drawable/baseline_groups_24"
-                    android:title="Grupos"/>
-                <item android:id="@+id/finance_status_menu"
-                    android:icon="@drawable/baseline_monetization_on_24"
-                    android:title="Finanzas"/>
             </menu>
         </item>
         <item

@@ -27,11 +27,6 @@ import com.muiska.clases.FileDownloader;
 import com.muiska.clases.FolderChange;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
 import com.muiska.clases.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class RequestFolderChangeFragment extends Fragment implements RecyclerViewClickListener {
@@ -40,7 +35,6 @@ public class RequestFolderChangeFragment extends Fragment implements RecyclerVie
     private User usuario;
     private FragmentActivity context;
 
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference();
 
     public RequestFolderChangeFragment() {
         // Required empty public constructor
@@ -65,6 +59,8 @@ public class RequestFolderChangeFragment extends Fragment implements RecyclerVie
         adapter = new FolderChangeAdapter(cambios, context, this);
         recyclerView.setAdapter(adapter);
 
+
+        /*
         root.child("requests-folder_change").addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
             @Override
@@ -79,6 +75,8 @@ public class RequestFolderChangeFragment extends Fragment implements RecyclerVie
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
+
+         */
     }
 
     @Override

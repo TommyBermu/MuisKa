@@ -22,11 +22,6 @@ import com.muiska.clases.User;
 import com.muiska.clases.FolderChange;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 public class ChangeFolderFragment extends Fragment {
     private User usuario;
@@ -34,9 +29,6 @@ public class ChangeFolderFragment extends Fragment {
     EditText editText, editText2, editText3;
     Button btn, btnDialog;
     AlertDialog dialog;
-
-    StorageReference storageReference = FirebaseStorage.getInstance().getReference("requests-folder_change");
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("requests-folder_change");
 
     private Uri selectedPdfUri1;
     private Uri selectedPdfUri2;
@@ -126,7 +118,7 @@ public class ChangeFolderFragment extends Fragment {
                         public void onClick(View v) {
                             //uploadPDFFileFirebase(result.getData().getData());
                             if (selectedPdfUri1 != null && selectedPdfUri2 != null) {
-                                uploadPDFFile(selectedPdfUri1, selectedPdfUri2);
+                                // uploadPDFFile(selectedPdfUri1, selectedPdfUri2);
 
                                 //muestra el dialogo de exito
                                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -140,7 +132,7 @@ public class ChangeFolderFragment extends Fragment {
                 }
             }
     );
-
+    /*
     private void uploadPDFFile(Uri data1, Uri data2) {
         storageReference.child("PDF" + System.currentTimeMillis() + ".pdf").putFile(data1).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -170,5 +162,5 @@ public class ChangeFolderFragment extends Fragment {
                 });
             }
         });
-    }
+    }*/
 }

@@ -11,14 +11,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import android.content.Intent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
 
+import com.muiska.clases.SQLConnection;
 import com.muiska.clases.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,8 +34,7 @@ public class AuthActivity extends AppCompatActivity {
         prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE);
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         if (fUser != null && fUser.isEmailVerified() && prefs.getString("email", null) != null) {
-            Intent home = new Intent(this, MainActivity.class);
-            startActivity(home);
+            startActivity(new Intent(this, MainActivity.class));
         }
 
         //quita el SplashScreen y pone el de la app
@@ -68,13 +66,8 @@ public class AuthActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (fUser != null && fUser.isEmailVerified() && prefs.getString("email", null) != null) {
-            Intent home = new Intent(this, MainActivity.class);
-            startActivity(home);
+            startActivity(new Intent(this, MainActivity.class));
         }
-    }
-
-    public User getUsuario(){
-        return usuario;
     }
 
     public void createUser(String name, String surname, String email) {
@@ -91,9 +84,13 @@ public class AuthActivity extends AppCompatActivity {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                usuario.createUser(User.Cargo.COMUNERO, name, surname, email);
+                usuario.createUser(name, surname, User.Cargo.COMUNERO, email);
                 dialog.cancel();
             }
         });
+    }
+
+    public User getUsuario(){
+        return usuario;
     }
 }

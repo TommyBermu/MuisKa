@@ -1,11 +1,17 @@
 package com.muiska;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.credentials.Credential;
+import android.credentials.GetCredentialRequest;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.credentials.CredentialManager;
 import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +21,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+// import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+// import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.muiska.clases.GoogleSignInHelper;
 import com.muiska.clases.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,10 +34,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-
 import java.util.Objects;
 
 public class LogInFragment extends Fragment {
@@ -35,7 +41,7 @@ public class LogInFragment extends Fragment {
     private TextInputLayout tv2;
     private static final String TAG = "EmailPassword";
     //private GoogleSignInClient gsc;
-    private final FirebaseFirestore db  = FirebaseFirestore.getInstance();
+
     //private final CallbackManager callbackManager = CallbackManager.Factory.create(); * para facebook *
     private User usuario;
 
@@ -91,71 +97,26 @@ public class LogInFragment extends Fragment {
     }
 
     public void googleSignIn(){
-        Toast.makeText(getActivity(), "Funcionalidad en desarrollo", Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(getActivity(), "Funcionalidad no disponible", Toast.LENGTH_SHORT).show();
         /*
-        CredentialManager credentialManager = CredentialManager.create(requireActivity());
-        GetCredentialRequest request = new GetCredentialRequest.Builder()
-                .addCredentialOption(new GetGoogleIdOption.Builder()
-                        .setFilterByAuthorizedAccounts(false)
-                        .build())
-                .build();
-
-        Executor executor = Executors.newSingleThreadExecutor();
-        CancellationSignal cancellationSignal = new CancellationSignal();
-
-        credentialManager.getCredentialAsync(
-                requireActivity(), // Asegúrate de tener una referencia válida al contexto
-                request,
-                cancellationSignal,
-                executor,
-                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
-                    @Override
-                    public void onResult(GetCredentialResponse result) {
-                        String googleIdToken = String.valueOf(result.getCredential().getData());
-                        Toast.makeText(requireActivity(), googleIdToken, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(GetCredentialException error) {
-                        // Manejar error
-                    }
+        GoogleSignInHelper googleSignInHelper = new GoogleSignInHelper(requireActivity(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Log.d(TAG, "Inicio de sesión exitoso");
+                } else {
+                    Log.e(TAG, "Error en el inicio de sesión");
                 }
-        );
+            }
+        });
 
-
-        Intent intent = gsc.getSignInIntent();
-        gsc.signOut();
-        activityResultLauncher.launch(intent);
+        googleSignInHelper.signInWithGoogle();
         */
     }
 
     public void facebookSignIn(){
         Toast.makeText(getActivity(), "Funcionalidad no disponible", Toast.LENGTH_SHORT).show();
-        /*TODO esperar a que facebook se le de la gana de volver a implementar las cuentas de prueba para poder probar el login con facebook
-
-        LoginManager.getInstance().logInWithReadPermissions(AuthActivity.this, Collections.singletonList("email"));
-
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                AccessToken token = loginResult.getAccessToken();
-
-                AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-                authUser(credential);
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-            }
-
-            @Override
-            public void onError(@NonNull FacebookException exception) {
-                Toast.makeText(AuthActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-     */
+        //TODO esperar a que facebook se le de la gana de volver a implementar las cuentas de prueba para poder probar el login con facebook
     }
     /*
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -165,8 +126,6 @@ public class LogInFragment extends Fragment {
                 public void onActivityResult(ActivityResult o) {
                     int result = o.getResultCode();
                     Intent data = o.getData();
-
-                    //callbackManager.onActivityResult(1, result, data);  * para facebook *
 
                     if (result == RESULT_OK){
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -182,7 +141,7 @@ public class LogInFragment extends Fragment {
                     }
                 }
             });
-*/
+
     private void authUser(AuthCredential credential){
         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
             @Override
@@ -211,7 +170,7 @@ public class LogInFragment extends Fragment {
                 }
             }
         });
-    }
+    }*/
 
     public void signUp() {
         usuario.replaceFragment(new RegisterFragment());

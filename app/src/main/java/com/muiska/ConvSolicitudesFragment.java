@@ -25,12 +25,7 @@ import com.muiska.clases.Adapters.RecyclerViewClickListener;
 import com.muiska.clases.Adapters.StringAdapter;
 import com.muiska.clases.FolderChange;
 import com.muiska.clases.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,8 +37,6 @@ public class ConvSolicitudesFragment extends Fragment implements RecyclerViewCli
     private String conv;
     private User usuario;
     private FragmentActivity context;
-
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference();
 
     public ConvSolicitudesFragment() {
         // Required empty public constructor
@@ -73,6 +66,8 @@ public class ConvSolicitudesFragment extends Fragment implements RecyclerViewCli
         adapter = new HashMapAdapter(peticion, context, this, HashMapAdapter.Tipo.CONVOCATORIA, conv);
         recyclerView.setAdapter(adapter);
 
+        /*
+
         root.child("requests-convs").child(conv).addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
             @Override
@@ -88,8 +83,12 @@ public class ConvSolicitudesFragment extends Fragment implements RecyclerViewCli
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
+
+        */
     }
 
     @Override

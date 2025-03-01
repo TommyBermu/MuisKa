@@ -14,14 +14,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
+// import com.bumptech.glide.Glide;
 import com.muiska.clases.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,9 +27,6 @@ public class JoinGroupFragment extends Fragment {
     User usuario;
     ImageView imv_poster;
     TextView tv_name, tv_description;
-
-    private final FirebaseFirestore db  = FirebaseFirestore.getInstance();
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference("requests-groups");
 
     public JoinGroupFragment() {
         // Required empty public constructor
@@ -54,7 +47,7 @@ public class JoinGroupFragment extends Fragment {
 
         if (getArguments() != null){
             Bundle result = getArguments();
-            Glide.with(requireActivity()).load(result.getString("link")).into(imv_poster);
+            // TODO Glide.with(requireActivity()).load(result.getString("link")).into(imv_poster);
             tv_name.setText(result.getString("nombre"));
             tv_description.setText(result.getString("descripcion"));
         }
@@ -77,6 +70,8 @@ public class JoinGroupFragment extends Fragment {
                 mapa.put("name", usuario.getNombre() + " " + usuario.getApellidos());
                 mapa.put("accepted", null);// null porque, aunque se incriba, no significa que sea aceptado
 
+
+                /*
                 String path = root.push().getKey();
                 assert path != null;
 
@@ -109,6 +104,8 @@ public class JoinGroupFragment extends Fragment {
                         }
                     }
                 });
+
+                 */
             }
         });
     }

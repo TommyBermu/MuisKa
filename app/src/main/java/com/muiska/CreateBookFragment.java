@@ -30,11 +30,7 @@ import android.widget.Toast;
 import com.muiska.clases.Libro;
 import com.muiska.clases.Publicacion;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,9 +40,6 @@ public class CreateBookFragment extends Fragment {
     private ImageButton imageButton; //para colocar un chulito verde despues de seleccionar el archivo
     private Uri pdfUri;
     private EditText title, description;
-
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference("library");
-    private final StorageReference reference = FirebaseStorage.getInstance().getReference("library");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,10 +68,13 @@ public class CreateBookFragment extends Fragment {
         uploadbook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 if (pdfUri != null && !title.getText().toString().isEmpty() && !description.getText().toString().isEmpty())
                     uploadTofirebase(pdfUri);
                 else
                     Toast.makeText(getContext(), "Please select a file or fill all the fields", Toast.LENGTH_SHORT).show();
+
+                 */
             }
         });
     }
@@ -96,6 +92,8 @@ public class CreateBookFragment extends Fragment {
                     }
                 }
             });
+
+    /*
 
     private void uploadTofirebase(Uri pdfUri){
         final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(pdfUri));
@@ -124,7 +122,7 @@ public class CreateBookFragment extends Fragment {
                 });
             }
         });
-    }
+    } */
 
     private String getFileExtension(Uri uri){
         ContentResolver cr = requireActivity().getContentResolver();

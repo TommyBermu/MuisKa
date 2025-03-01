@@ -22,12 +22,6 @@ import android.widget.Toast;
 import com.muiska.clases.Adapters.HashMapAdapter;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
 import com.muiska.clases.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +34,6 @@ public class GroupSolicitudesFragment extends Fragment implements RecyclerViewCl
     private User usuario;
     private FragmentActivity context;
 
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference();
 
     public GroupSolicitudesFragment() {
         // Required empty public constructor
@@ -71,6 +64,7 @@ public class GroupSolicitudesFragment extends Fragment implements RecyclerViewCl
         adapter = new HashMapAdapter(peticion, context, this, HashMapAdapter.Tipo.GRUPO, group);
         recyclerView.setAdapter(adapter);
 
+        /*
         root.child("requests-groups").child(group).addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
             @Override
@@ -88,6 +82,8 @@ public class GroupSolicitudesFragment extends Fragment implements RecyclerViewCl
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
+
+         */
     }
 
     @Override

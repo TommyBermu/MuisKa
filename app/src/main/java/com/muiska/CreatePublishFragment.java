@@ -27,11 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.muiska.clases.Publicacion;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,10 +42,6 @@ public class CreatePublishFragment extends Fragment {
     private String end_date;
     private TextView show_date;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-
-    private final DatabaseReference root = FirebaseDatabase.getInstance().getReference("publications");
-    private final StorageReference reference = FirebaseStorage.getInstance().getReference("publications");
-
     public CreatePublishFragment() {
         // Required empty public constructor
     }
@@ -82,10 +73,13 @@ public class CreatePublishFragment extends Fragment {
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 if (imageUri != null && !title.getText().toString().isEmpty() && !description.getText().toString().isEmpty() && end_date != null)
                     uploadTofirebase(imageUri);
                 else
                     Toast.makeText(getContext(), "Please select an image or fill all the fields", Toast.LENGTH_SHORT).show();
+
+                 */
             }
         });
 
@@ -137,6 +131,7 @@ public class CreatePublishFragment extends Fragment {
                 }
             });
 
+    /*
     private void uploadTofirebase(Uri imageUri){
         final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
         fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -168,6 +163,8 @@ public class CreatePublishFragment extends Fragment {
             }
         });
     }
+
+     */
 
     private String getFileExtension(Uri uri){
         ContentResolver cr = requireActivity().getContentResolver();
