@@ -113,7 +113,7 @@ public class HashMapAdapter extends RecyclerView.Adapter<HashMapAdapter.HashMapV
                 @Override
                 public void onClick(View v) {
                     if (listener != null){
-                        int pos = getAbsoluteAdapterPosition();
+                        int pos = getAdapterPosition();
                         if (pos != RecyclerView.NO_POSITION){
                             listener.onItemCliked(pos);
                         }
@@ -125,7 +125,7 @@ public class HashMapAdapter extends RecyclerView.Adapter<HashMapAdapter.HashMapV
                 @Override
                 public boolean onLongClick(View v) {
                     if (listener != null){
-                        int pos = getAbsoluteAdapterPosition();
+                        int pos = getAdapterPosition();
                         if (pos != RecyclerView.NO_POSITION){
                             listener.onItemLongCliked(pos);
                         }

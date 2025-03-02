@@ -90,7 +90,7 @@ public class LibroAdapter extends RecyclerView.Adapter<LibroAdapter.LibroViewHol
                 @Override
                 public void onClick(View v) {
                     if (listener != null){
-                        int pos = getAbsoluteAdapterPosition();
+                        int pos = getAdapterPosition();
                         if (pos != RecyclerView.NO_POSITION){
                             listener.onItemCliked(pos);
                         }
@@ -102,7 +102,7 @@ public class LibroAdapter extends RecyclerView.Adapter<LibroAdapter.LibroViewHol
                 @Override
                 public boolean onLongClick(View v) {
                     if (listener != null){
-                        int pos = getAbsoluteAdapterPosition();
+                        int pos = getAdapterPosition();
                         if (pos != RecyclerView.NO_POSITION){
                             listener.onItemLongCliked(pos);
                         }

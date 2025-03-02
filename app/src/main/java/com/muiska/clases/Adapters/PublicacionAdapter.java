@@ -42,7 +42,6 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
         holder.description.setText(publicacion.getDescripcion());
         String end_date = "Fecha de finalización: " + publicacion.getFecha_finalizacion();
         holder.fecha.setText(end_date);
-
     }
 
     @Override

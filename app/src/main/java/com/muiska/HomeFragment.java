@@ -99,6 +99,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
                         inscribir.setInt(1, usuario.getId());
                         inscribir.setString(2, "nulo por ahora xd"); // TODO link de la carta
                         inscribir.setInt(3, publicaciones.get(position).getPubId());
+
                         int filasAfectadas = inscribir.executeUpdate();
 
                         usuario.addInscripcion(titulo);

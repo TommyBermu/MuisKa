@@ -54,7 +54,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                 @Override
                 public void onClick(View v) {
                     if (listener != null){
-                        int pos = getAbsoluteAdapterPosition();
+                        int pos = getAdapterPosition();
                         if (pos != RecyclerView.NO_POSITION){
                             listener.onItemCliked(pos);
                         }
@@ -66,7 +66,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                 @Override
                 public boolean onLongClick(View v) {
                     if (listener != null){
-                        int pos = getAbsoluteAdapterPosition();
+                        int pos = getAdapterPosition();
                         if (pos != RecyclerView.NO_POSITION){
                             listener.onItemLongCliked(pos);
                         }
