@@ -57,7 +57,7 @@ public class Publicacion implements Comparable<Publicacion> {
 
     @Override
     public int compareTo(@NonNull Publicacion o) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.US);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S", Locale.US);
         try {
             if (Objects.requireNonNull(dateFormat.parse(this.getFecha_publicacion())).before(dateFormat.parse(o.getFecha_publicacion()))){
                 return 1;

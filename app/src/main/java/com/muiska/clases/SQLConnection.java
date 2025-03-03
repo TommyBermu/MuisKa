@@ -20,9 +20,9 @@ public class SQLConnection {
     private static String user="root";
     private static String password="";
     private static String host="4.tcp.ngrok.io"; // cambia segun la sesion
-    private static String port="12540"; // cambia segun la sesion
+    private static String port="15411"; // cambia segun la sesion
 
-    private static String server="jdbc:mysql://"+host+":"+port+"/"+bd+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"; // TODO no se si al ser solo UTC y no UTC + 5 las fechas seran diferentes
+    private static String server="jdbc:mysql://"+host+":"+port+"/"+bd+"?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"; // TODO no se si al ser solo UTC y no UTC + 5 las fechas seran diferentes
 
     public Connection conectar() {
         //conectar

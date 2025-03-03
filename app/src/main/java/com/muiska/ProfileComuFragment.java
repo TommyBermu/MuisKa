@@ -85,20 +85,6 @@ public class ProfileComuFragment extends Fragment {
         TextView birthDate = view.findViewById(R.id.birthdayDate);
         birthDate.setText(prefs.getString("fecha de nacimiento", null));
 
-        RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
-        if (prefs.getString("sexo", "").equals("Femenino"))
-            radioGroup.check(R.id.radioButton);
-        else if (prefs.getString("sexo", "").equals("Masculino"))
-            radioGroup.check(R.id.radioButton2);
-
-        Spinner spinner = view.findViewById(R.id.clanSpinner);
-        String[] clanes = {"Seleccione", "clan1", "clan2", "clan3", "clan4", "clan5"}; // TODO Hacer que se pueda actualizar desde la nube
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_spinner_item, clanes);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(Integer.parseInt(prefs.getString("clan", "0")));
-
-        // para editar los datos
-
         birthDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,8 +102,8 @@ public class ProfileComuFragment extends Fragment {
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                SimpleDateFormat sdf_end = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-                birthday = dayOfMonth + "/" + (month+1) + "/" + year;
+                SimpleDateFormat sdf_end = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                birthday = year + "-" + (month+1) + "-" + dayOfMonth ;
                 try {
                     if (sdf_end.parse(birthday).before(new Date())){
                         birthDate.setText(birthday);
@@ -145,21 +131,8 @@ public class ProfileComuFragment extends Fragment {
                 String profesion = etv5.getText().toString();
                 birthday = birthDate.getText().toString();
 
-                int clan = spinner.getSelectedItemPosition();
-                String sexo = "";
-
-                RadioButton rb1 = view.findViewById(R.id.radioButton);
-                RadioButton rb2 = view.findViewById(R.id.radioButton2);
-
-                if (rb1.isChecked()) {
-                    sexo = "Femenino";
-                } else if (rb2.isChecked()) {
-                    sexo = "Masculino";
-                }
-
-                if (!nombreMadre.isEmpty() && !apellidosMadre.isEmpty() && !nombrePadre.isEmpty() && !apellidosPadre.isEmpty() && birthday != null && !sexo.isEmpty() && !profesion.isEmpty()) {
+                if (!nombreMadre.isEmpty() && !apellidosMadre.isEmpty() && !nombrePadre.isEmpty() && !apellidosPadre.isEmpty() && !profesion.isEmpty()) {
                     usuario.updateInfo(nombre, apellidos, nombreMadre, apellidosMadre, nombrePadre, apellidosPadre, birthday, profesion);
-                    // TODO quitar el clan
                 } else {
                     Toast.makeText(requireActivity(), "Debes llenar y/o seleccionar todos los campos", Toast.LENGTH_SHORT).show();
                 }

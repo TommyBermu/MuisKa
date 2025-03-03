@@ -47,7 +47,9 @@ public class FolderChangeAdapter extends RecyclerView.Adapter<FolderChangeAdapte
                 holder.deny.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        actualizarPeticion(false, folderChange);
+                        // actualizarPeticion(false, folderChange);
+                        Toast.makeText(mContext, "Petición denegada, pero no se cambia en la BD", Toast.LENGTH_SHORT).show();
+
                     }
                 });
             }
@@ -60,7 +62,8 @@ public class FolderChangeAdapter extends RecyclerView.Adapter<FolderChangeAdapte
                 holder.accept.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        actualizarPeticion(true, folderChange);
+                        // actualizarPeticion(true, folderChange);
+                        Toast.makeText(mContext, "Petición aceptada, pero no se cambia en la BD", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -78,7 +81,7 @@ public class FolderChangeAdapter extends RecyclerView.Adapter<FolderChangeAdapte
     @Override
     public void onItemLongCliked(int position) {}
 
-
+    /*
     private void actualizarPeticion(boolean accepted, @NonNull FolderChange folderChange) {
         DatabaseReference root = FirebaseDatabase.getInstance().getReference();
         root.child("requests-folder_change").child(folderChange.getRef()).removeValue();
@@ -102,6 +105,7 @@ public class FolderChangeAdapter extends RecyclerView.Adapter<FolderChangeAdapte
             Toast.makeText(mContext, "Petición denegada", Toast.LENGTH_SHORT).show();
         }
     }
+    */
 
     public static class FolderChangeViewHolder extends RecyclerView.ViewHolder {
         TextView nombre, email;

@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class AuthActivity extends AppCompatActivity {
     SharedPreferences prefs;
     FirebaseUser fUser;
-
     public User usuario;
 
     @Override
@@ -66,26 +65,6 @@ public class AuthActivity extends AppCompatActivity {
         if (fUser != null && fUser.isEmailVerified() && prefs.getString("email", null) != null) {
             startActivity(new Intent(this, MainActivity.class));
         }
-    }
-
-    public void createUser(String name, String surname, String email) {
-        //se muestra el cuadro de dialogo
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_auth, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView);
-
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-
-        Button ok = dialogView.findViewById(R.id.btnOk);
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                usuario.createUser(name, surname, User.Cargo.COMUNERO, email);
-                dialog.cancel();
-            }
-        });
     }
 
     public User getUsuario(){

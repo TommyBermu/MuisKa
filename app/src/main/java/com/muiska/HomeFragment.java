@@ -1,5 +1,6 @@
 package com.muiska;
 
+import static org.chromium.base.ThreadUtils.runOnUiThread;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -26,10 +27,8 @@ import com.muiska.clases.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment implements RecyclerViewClickListener {
@@ -103,7 +102,9 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
                         int filasAfectadas = inscribir.executeUpdate();
 
                         usuario.addInscripcion(titulo);
-                        Toast.makeText(requireActivity(), "Te has inscrito en: " + titulo, Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            Toast.makeText(requireActivity(), "Te has inscrito en: " + titulo, Toast.LENGTH_SHORT).show();
+                        });
                         Log.i("CONSULTA", "la consutla se realizo con exito");
 
                     } catch (SQLException ex) {
@@ -125,7 +126,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
 
     @Override
     public void onItemLongCliked(int position) {
-        //TODO implementar lo de des-inscribirse
+        //TODO implementar lo de des-inscribirse o borrar si es comunicador o Admin
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -141,20 +142,22 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
                     publicaciones.add(new Publicacion(
                             rs.getInt("idPublicacion"),
                             rs.getString("Titulo"),
-                            rs.getBytes("Imagen"),
+                            rs.getBytes("LinkImagen"),
                             rs.getString("Descripcion"),
                             rs.getString("FechaFinalizacion"),
                             rs.getString("FechaPublicacion"),
                             rs.getBoolean("Tipo")
                     ));
                     Collections.sort(publicaciones);
-                    adapter.notifyDataSetChanged();
+
+                    runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                    });
                 }
             } catch (SQLException ex) {
                 Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
                 ex.printStackTrace();
             }
         });
-
     }
 }

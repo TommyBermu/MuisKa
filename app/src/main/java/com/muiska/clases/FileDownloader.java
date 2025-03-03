@@ -21,6 +21,12 @@ public class FileDownloader {
     private long downloadId;
     public static final int REQUEST_CODE = 101;
 
+    public void downloadFile(Context context, byte[] url, String fileName) {
+        //TODO hacer que lea el arreglo de bytes y decifre el PDF desde ese arreglo
+
+
+    }
+
     public void downloadFile(Context context, String url, String fileName) {
         try {
             // Obtener el DownloadManager

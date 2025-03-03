@@ -60,7 +60,7 @@ public class JoinGroupFragment extends Fragment {
             public void onClick(View v) {
                 String nombre_grupo = tv_name.getText().toString();
 
-                if(usuario.getGrupos().containsKey(nombre_grupo)) {
+                if(usuario.getGrupos().contains(nombre_grupo)) {
                     Toast.makeText(requireActivity(), "Ya estás inscrito en este grupo", Toast.LENGTH_SHORT).show();
                     return;
                 }

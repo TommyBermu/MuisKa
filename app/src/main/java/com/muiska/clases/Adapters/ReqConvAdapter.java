@@ -10,35 +10,30 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.muiska.R;
-import com.google.android.gms.tasks.OnSuccessListener;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class HashMapAdapter extends RecyclerView.Adapter<HashMapAdapter.HashMapViewHolder> implements RecyclerViewClickListener{
+
+public class ReqConvAdapter extends RecyclerView.Adapter<ReqConvAdapter.ReqConvViewHolder> implements RecyclerViewClickListener{
     private ArrayList<HashMap<String, Object>> mHashMaps;
     private RecyclerViewClickListener listener;
     private Context mContext;
-    private Tipo tipo;
-    private String folder;
 
-    public HashMapAdapter(ArrayList<HashMap<String, Object>> mHashMaps, Context context, RecyclerViewClickListener listener, Tipo tipo, String folder) {
+    public ReqConvAdapter(ArrayList<HashMap<String, Object>> mHashMaps, Context context, RecyclerViewClickListener listener) {
         this.mHashMaps = mHashMaps;
         this.listener = listener;
         this.mContext = context;
-        this.tipo = tipo;
-        this.folder = folder;
     }
 
     @NonNull
     @Override
-    public HashMapAdapter.HashMapViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ReqConvViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_request, parent, false);
-        return new HashMapAdapter.HashMapViewHolder(view, listener);
+        return new ReqConvViewHolder(view, listener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HashMapAdapter.HashMapViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ReqConvViewHolder holder, int position) {
         HashMap<String, Object> hashMap = mHashMaps.get(position);
 
         holder.nombre.setText(hashMap.get("name").toString());
@@ -72,16 +67,17 @@ public class HashMapAdapter extends RecyclerView.Adapter<HashMapAdapter.HashMapV
 
     private void actualizarPeticion(boolean accepted, @NonNull HashMap<String, Object> mapa) {
         if (accepted){
-            Toast.makeText(mContext, "Petición aceptada", Toast.LENGTH_SHORT).show();
-            putDA(true, mapa);
+            Toast.makeText(mContext, "Petición aceptada, pero no se cambia en la BD", Toast.LENGTH_SHORT).show();
+            // putDA(true, mapa);
         }
         else {
-            Toast.makeText(mContext, "Petición denegada", Toast.LENGTH_SHORT).show();
-            putDA(false, mapa);
+            Toast.makeText(mContext, "Petición denegada, pero no se cambia en la BD", Toast.LENGTH_SHORT).show();
+            // putDA(false, mapa);
         }
         mHashMaps.remove(mapa);
     }
 
+    /*
     private void putDA(boolean b, HashMap<String, Object> mapa){
         DatabaseReference root = FirebaseDatabase.getInstance().getReference();
         String reference = mapa.get("ref").toString();
@@ -91,17 +87,18 @@ public class HashMapAdapter extends RecyclerView.Adapter<HashMapAdapter.HashMapV
             root.child("requests-groups").child(folder).child(reference).child("accepted").setValue(b);
         }
     }
+    */
 
     public enum Tipo{
         CONVOCATORIA,
         GRUPO
     }
 
-    public static class HashMapViewHolder extends RecyclerView.ViewHolder{
+    public static class ReqConvViewHolder extends RecyclerView.ViewHolder{
         TextView nombre, email;
         Button deny, accept;
 
-        public HashMapViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
+        public ReqConvViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
             super(itemView);
 
             nombre = itemView.findViewById(R.id.nombre_comunero);

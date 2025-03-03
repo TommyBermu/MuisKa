@@ -12,11 +12,19 @@
                     android:title="Cambio de Carpeta"/>
             </menu>
         </item>
-        <item android:title="Peticiones">
+        <item
+            android:title="Solicitudes">
+            <menu>
+                <item android:id="@+id/book_requests_menu"
+                    android:icon="@drawable/baseline_upload_file_24"
+                    android:title="Subir Libros"/>
+            </menu>
+        </item>
+        <item android:title="Creación">
             <menu>
                 <item android:id="@+id/create_group_menu"
-                    android:icon="@drawable/baseline_group_add_24"
-                    android:title="Crear un Grupo"/>
+                    android:icon="@drawable/baseline_groups_24"
+                    android:title="Gestionar mi grupo"/>
                 <item android:id="@+id/add_book_menu"
                     android:icon="@drawable/baseline_library_add_24"
                     android:title="Añadir un libro"/>

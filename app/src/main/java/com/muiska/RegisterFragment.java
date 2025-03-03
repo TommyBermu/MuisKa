@@ -1,5 +1,8 @@
 package com.muiska;
+import android.app.AlertDialog;
 import android.credentials.GetCredentialRequest;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,12 +24,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.muiska.clases.User;
 
 import java.util.Objects;
 
 public class RegisterFragment extends Fragment {
     private EditText tv1, tv2, tv3, tv4, tv5;
     private static final String TAG = "EmailPassword";
+    User usuario;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -40,6 +45,8 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        usuario = ((AuthActivity) requireActivity()).getUsuario();
 
         tv1 = view.findViewById(R.id.nombres);
         tv2 = view.findViewById(R.id.apellidos);
@@ -72,7 +79,7 @@ public class RegisterFragment extends Fragment {
                                 Log.d(TAG, "createUserWithEmail:success");
 
                                 //sale el cuadro de díalogo para seleccionar la relacion con la comunidad
-                                ((AuthActivity) requireActivity()).createUser(name, surname, Email);
+                                createUser(name, surname, Email);
                             } else {
                                 // If sign up fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -84,6 +91,26 @@ public class RegisterFragment extends Fragment {
                     Log.w(TAG, "createUserWithEmail:failure", e);
                     Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+    }
+
+    public void createUser(String name, String surname, String email) {
+        //se muestra el cuadro de dialogo
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_auth, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        Button ok = dialogView.findViewById(R.id.btnOk);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                usuario.createUser(name, surname, User.Cargo.COMUNERO, email);
+                dialog.cancel();
             }
         });
     }

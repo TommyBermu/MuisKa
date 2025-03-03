@@ -9,9 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.muiska.clases.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 public class SeeUserInfoFragment extends Fragment {
     FragmentActivity context;
@@ -49,12 +46,10 @@ public class SeeUserInfoFragment extends Fragment {
         tv_name_padre = view.findViewById(R.id.nameFather);
         tv_surname_padre = view.findViewById(R.id.surnameFather);
         tv_cumpleanios = view.findViewById(R.id.birthdayDate);
-        tv_sexo = view.findViewById(R.id.viewSexo);
-        tv_clan = view.findViewById(R.id.viewClan);
         tv_cargo = view.findViewById(R.id.profession);
 
 
-        /*
+        /* TODO la info se saca con el Email :D (ez)
         db.collection("users").document(Email).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {

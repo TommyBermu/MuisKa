@@ -28,23 +28,11 @@ public class Group {
         return link_poster;
     }
 
-    public void setLink_poster(String link_poster) {
-        this.link_poster = link_poster;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public HashMap<String, String> getMiembros() {
         return miembros;
-    }
-
-    public void setMiembros(HashMap<String, String> miembros) {
-        this.miembros = miembros;
     }
 }

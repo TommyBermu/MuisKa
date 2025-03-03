@@ -42,19 +42,19 @@ public class LibroAdapter extends RecyclerView.Adapter<LibroAdapter.LibroViewHol
 
         holder.title.setText(libro.getTitulo());
         holder.description.setText(libro.getDescripcion_libro());
+        holder.autor.setText(libro.getAutor());
 
         holder.button_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String linkLibro = libro.getLink_libro();
-
-                FileDownloader fileDownloader = new FileDownloader();
+                byte[] linkLibro = libro.getLink_libro();
 
                 if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions((Activity) v.getContext(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
-
                 } else {
-                    fileDownloader.downloadFile(v.getContext(), libro.getLink_libro(), libro.getTitulo());
+                    // TODO que hacer si se da click en el boton del libro: descargarlo xd
+                    FileDownloader fileDownloader = new FileDownloader();
+                    //f ileDownloader.downloadFile(v.getContext(), libro.getLink_libro(), libro.getTitulo());
                     Toast.makeText(v.getContext(), "La descarga de "+libro.getTitulo()+" ha finalizado", Toast.LENGTH_LONG).show();
                 }
             }
@@ -77,6 +77,7 @@ public class LibroAdapter extends RecyclerView.Adapter<LibroAdapter.LibroViewHol
         //ImageView image;  para caratula
         TextView title;
         TextView description;
+        TextView autor;
         Button button_download;
 
         public LibroViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
@@ -84,6 +85,7 @@ public class LibroAdapter extends RecyclerView.Adapter<LibroAdapter.LibroViewHol
 
             title = itemView.findViewById(R.id.nombre_libro);
             description = itemView.findViewById(R.id.description_libro);
+            autor = itemView.findViewById(R.id.autor_libro);
             button_download = itemView.findViewById(R.id.btnDownloadBook);
 
             itemView.setOnClickListener(new View.OnClickListener() {

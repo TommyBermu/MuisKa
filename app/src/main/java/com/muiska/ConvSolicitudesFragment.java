@@ -1,5 +1,7 @@
 package com.muiska;
 
+import static org.chromium.base.ThreadUtils.runOnUiThread;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -13,23 +15,24 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.muiska.clases.Adapters.FolderChangeAdapter;
-import com.muiska.clases.Adapters.HashMapAdapter;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
-import com.muiska.clases.Adapters.StringAdapter;
-import com.muiska.clases.FolderChange;
+import com.muiska.clases.Publicacion;
 import com.muiska.clases.User;
 
-
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Objects;
+
 
 public class ConvSolicitudesFragment extends Fragment implements RecyclerViewClickListener {
     private ArrayList<HashMap<String, Object>> peticion;
@@ -66,29 +69,7 @@ public class ConvSolicitudesFragment extends Fragment implements RecyclerViewCli
         adapter = new HashMapAdapter(peticion, context, this, HashMapAdapter.Tipo.CONVOCATORIA, conv);
         recyclerView.setAdapter(adapter);
 
-        /*
-
-        root.child("requests-convs").child(conv).addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    GenericTypeIndicator<HashMap<String, Object>> typeIndicator = new GenericTypeIndicator<HashMap<String, Object>>() {};
-                    HashMap<String, Object> hashmap = dataSnapshot.getValue(typeIndicator);
-                    assert hashmap != null : " hashmap es null en ConvSolicitudesFragment";
-                    if (Objects.equals(hashmap.get("accepted"), null)) // TODO si se quiere filtrar por lo que ya están o por los que se rechazaron, se cambia entre true y false
-                        peticion.add(hashmap);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        */
+        fetch();
     }
 
     @Override
@@ -123,6 +104,37 @@ public class ConvSolicitudesFragment extends Fragment implements RecyclerViewCli
             @Override
             public void onClick(View v) {
                 dialog.cancel();
+            }
+        });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void fetch(){
+        usuario.getExecutor().execute(() -> {
+            String consulta = "SELECT * FROM Publicacion";
+            try (PreparedStatement fetch = usuario.getConnection().prepareStatement(consulta)) {
+
+                ResultSet rs = fetch.executeQuery();
+
+                while(rs.next()){
+                    peticion.add(new Publicacion(
+                            rs.getInt("idPublicacion"),
+                            rs.getString("Titulo"),
+                            rs.getBytes("LinkImagen"),
+                            rs.getString("Descripcion"),
+                            rs.getString("FechaFinalizacion"),
+                            rs.getString("FechaPublicacion"),
+                            rs.getBoolean("Tipo")
+                    ));
+                    Collections.sort(publicaciones);
+
+                    runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                    });
+                }
+            } catch (SQLException ex) {
+                Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
+                ex.printStackTrace();
             }
         });
     }

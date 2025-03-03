@@ -91,7 +91,7 @@ public class LogInFragment extends Fragment {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUp();
+                usuario.replaceFragment(new RegisterFragment());
             }
         });
     }
@@ -171,8 +171,4 @@ public class LogInFragment extends Fragment {
             }
         });
     }*/
-
-    public void signUp() {
-        usuario.replaceFragment(new RegisterFragment());
-    }
 }

@@ -1,8 +1,9 @@
 package com.muiska;
 
 import static android.app.Activity.RESULT_OK;
+import static org.chromium.base.ThreadUtils.runOnUiThread;
+
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -15,31 +16,30 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.muiska.clases.Publicacion;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.muiska.clases.User;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
 
 public class CreatePublishFragment extends Fragment {
     private ImageButton imageButton;
@@ -56,7 +56,7 @@ public class CreatePublishFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_create_publish, container, false);
     }
 
@@ -84,7 +84,7 @@ public class CreatePublishFragment extends Fragment {
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (imageUri != null && !title.getText().toString().isEmpty() && !description.getText().toString().isEmpty() && end_date != null)
+                if (imageUri != null || !title.getText().toString().isEmpty() && !description.getText().toString().isEmpty() && end_date != null) // TODO aca va && en vez de || pero no hemos hecho lo de subir una imagen xd
                     crearPublicacion(imageUri, title.getText().toString(), description.getText().toString(), end_date);
                 else
                     Toast.makeText(getContext(), "Please select an image or fill all the fields", Toast.LENGTH_SHORT).show();
@@ -109,8 +109,8 @@ public class CreatePublishFragment extends Fragment {
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                SimpleDateFormat sdf_end = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-                end_date = dayOfMonth + "/" + (month+1) + "/" + year;
+                SimpleDateFormat sdf_end = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                end_date = year + "-" + (month+1) + "-" + dayOfMonth ;
                 try {
                     if (sdf_end.parse(end_date).after(new Date())){
                         show_date.setText(end_date);
@@ -142,24 +142,54 @@ public class CreatePublishFragment extends Fragment {
     private void crearPublicacion(Uri imageUri, String titulo, String descripcion, String endDate){
         usuario.getExecutor().execute(() -> {
             // TODO hay que crear para subir un anuncio porque solo se creo el metodo para subir una convocatoria
-            String consulta = "CALL subirConvocatoria()";
-            try (PreparedStatement subirPublicacion = usuario.getConnection().prepareStatement(consulta)) {
+            String consulta = "CALL subirConvocatoria(?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement subirPublicacion = usuario.getConnection().prepareStatement(consulta);
+                    InputStream inputStream = requireActivity().getContentResolver().openInputStream(imageUri)) {
+
+                if (inputStream == null)
+                    throw new Exception("No se pudo abrir el InputStream del Uri");
+
+                byte[] image = convertirInputStreamABytes(inputStream);
 
                 //se agrega a la base de datos SQL
-                subirPublicacion.setInt(1, usuario.getId()); // TODO editar para hacer la consulta xd. esq me tengo que ir D:
+                subirPublicacion.setInt(1, usuario.getId());
+                subirPublicacion.setString(2, titulo);
+                subirPublicacion.setBytes(3, image);
+                subirPublicacion.setString(4, descripcion);
+                subirPublicacion.setString(5, endDate);
+                subirPublicacion.setString(6, "Requitos"); // TODO implementar luego
+                subirPublicacion.setInt(7, 10); // TODO implementar los cupos
 
                 int filasAfectadas = subirPublicacion.executeUpdate();
 
-                Toast.makeText(getContext(), "Publicación creada", Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "Publicación creada", Toast.LENGTH_SHORT).show();
+                });
+
                 imageButton.setImageResource(R.drawable.baseline_add_photo_alternate_270_p);
                 title.setText("");
                 description.setText("");
                 Log.i("CONSULTA", "la consutla se realizo con exito");
 
-            } catch (SQLException ex) {
+            } catch (SQLException | IOException ex) {
                 Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
                 ex.printStackTrace();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         });
+    }
+
+    @NonNull
+    public static byte[] convertirInputStreamABytes(@NonNull InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int bytesLeidos;
+
+        while ((bytesLeidos = inputStream.read(buffer)) != -1) {
+            byteArrayOutputStream.write(buffer, 0, bytesLeidos);
+        }
+
+        return byteArrayOutputStream.toByteArray(); // Devuelve el array de bytes
     }
 }

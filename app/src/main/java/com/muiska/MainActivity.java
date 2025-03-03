@@ -71,19 +71,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.inflateMenu(R.menu.nav_menu);
         } else if (usuario.getCargo().toString().equals(User.Cargo.PREFERENTE.toString())){
             navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.nav_menu);
+            navigationView.inflateMenu(R.menu.pref_nav_menu);
         } else if (usuario.getCargo().toString().equals(User.Cargo.LIBRERO.toString())){
             navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.nav_menu);
+            navigationView.inflateMenu(R.menu.lib_nav_menu);
         } else if (usuario.getCargo().toString().equals(User.Cargo.GESTOR_REDES.toString())){
             navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.nav_menu);
+            navigationView.inflateMenu(R.menu.com_nav_menu);
         } else if (usuario.getCargo().toString().equals(User.Cargo.GESTOR_GRUPO.toString())){
             navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.nav_menu);
+            navigationView.inflateMenu(R.menu.gges_nav_menu);
         } else if (usuario.getCargo().toString().equals(User.Cargo.CREAODR_GRUPOS.toString())){
             navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.nav_menu);
+            navigationView.inflateMenu(R.menu.gcre_nav_menu);
         }
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -131,14 +131,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.folder_change_menu && canAccess()) {
             replaceFragment(new ChangeFolderFragment());
-        } else if (id == R.id.group_join_menu && canAccess()) {
-            replaceFragment(new GroupsFragment());
         } else if (id == R.id.convs_requests_menu) {
             replaceFragment(new RequestConvFragment());
-        } else if (id == R.id.groups_requests_menu) {
-            replaceFragment(new RequestGroupFragment());
         } else if (id == R.id.folders_requests_menu) {
             replaceFragment(new RequestFolderChangeFragment());
+        } else if (id == R.id.groups_requests_menu) {
+            replaceFragment(new RequestGroupFragment());
         } else if (id == R.id.create_publication_menu) {
             replaceFragment(new CreatePublishFragment());
         } else if (id == R.id.create_group_menu) {
@@ -150,12 +148,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.side_menu, menu);
         return true;
     }
 

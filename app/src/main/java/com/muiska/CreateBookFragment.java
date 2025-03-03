@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,16 +31,20 @@ import android.widget.Toast;
 import com.muiska.clases.Libro;
 import com.muiska.clases.Publicacion;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.muiska.clases.User;
 
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class CreateBookFragment extends Fragment {
-    private ImageButton imageButton; //para colocar un chulito verde despues de seleccionar el archivo
-    private Uri pdfUri;
+    private ImageButton imageButton;
     private EditText title, description;
+    private User usuario;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +57,7 @@ public class CreateBookFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         title = view.findViewById(R.id.title);
         description = view.findViewById(R.id.description);
+        usuario = ((MainActivity) requireActivity()).getUsuario();
 
         imageButton = view.findViewById(R.id.imagePublication);
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -86,47 +92,33 @@ public class CreateBookFragment extends Fragment {
                 public void onActivityResult(ActivityResult onr) {
                     Intent data = onr.getData();
                     if (onr.getResultCode() == RESULT_OK && data != null) {
-                        pdfUri = data.getData();
+                        // pdfUri = data.getData();
                         imageButton.setImageResource(R.drawable.baseline_check_circle_24);  //setImageURI(pdfUri)
                         Toast.makeText(getContext(), "Archivo seleccionado.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
 
-    /*
+    private void upload(){
+        usuario.getExecutor().execute(() -> {
+            String consulta = "INSERT INTO Libro () VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement subirLibro = usuario.getConnection().prepareStatement(consulta)) {
 
-    private void uploadTofirebase(Uri pdfUri){
-        final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(pdfUri));
-        fileRef.putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String modelId = root.push().getKey();
-                        assert modelId != null;
+                //se agrega a la base de datos SQL
+                subirLibro.setInt(1, usuario.getId()); // TODO editar para hacer la consulta xd. esq me tengo que ir D:
 
-                        root.child(modelId).setValue(new Libro(
-                                title.getText().toString(),
-                                uri.toString(),
-                                description.getText().toString())).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(getContext(), "Libro añadido a la Biblioteca", Toast.LENGTH_SHORT).show();
-                                imageButton.setImageResource(R.drawable.baseline_cloud_upload_24);
-                                title.setText("");
-                                description.setText("");
-                            }
-                        });
-                    }
-                });
+                // int filasAfectadas = subirPublicacion.executeUpdate();
+
+                Toast.makeText(getContext(), "Publicación creada", Toast.LENGTH_SHORT).show();
+                imageButton.setImageResource(R.drawable.baseline_add_photo_alternate_270_p);
+                title.setText("");
+                description.setText("");
+                Log.i("CONSULTA", "la consutla se realizo con exito");
+
+            } catch (SQLException ex) {
+                Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");
+                ex.printStackTrace();
             }
         });
-    } */
-
-    private String getFileExtension(Uri uri){
-        ContentResolver cr = requireActivity().getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cr.getType(uri));
     }
 }

@@ -26,7 +26,7 @@ import com.google.android.gms.tasks.Task;
 public class ChangeFolderFragment extends Fragment {
     private User usuario;
 
-    EditText editText, editText2, editText3;
+    EditText editText, editText2;
     Button btn, btnDialog;
     AlertDialog dialog;
 
@@ -52,7 +52,6 @@ public class ChangeFolderFragment extends Fragment {
 
         editText = view.findViewById(R.id.etSelectFile);
         editText2 = view.findViewById(R.id.etSelectFileLetter);
-        editText3 = view.findViewById(R.id.folder_to_change);
         btn = view.findViewById(R.id.btnSendFile);
         btn.setEnabled(false);
 
@@ -117,6 +116,7 @@ public class ChangeFolderFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             //uploadPDFFileFirebase(result.getData().getData());
+                            // TODO aca se debe subir la peticion para cambiar de carpeta
                             if (selectedPdfUri1 != null && selectedPdfUri2 != null) {
                                 // uploadPDFFile(selectedPdfUri1, selectedPdfUri2);
 

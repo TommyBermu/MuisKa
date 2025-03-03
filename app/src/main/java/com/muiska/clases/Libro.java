@@ -1,44 +1,44 @@
 package com.muiska.clases;
 
 public class Libro {
-    private String titulo, link_libro, descripcion_libro, imagen_portada;
+    private int idLibro, acceso;
+    private String titulo, descripcion_libro, autor;
+    private byte[] link_libro;
 
     public Libro() {
-        // Firebase lo necesita para poder deserializar
     }
 
-    public Libro(String titulo, String link_libro, String descripcion_libro){
+    public Libro(int idLibro, int acceso, String titulo, byte[] link_libro, String descripcion_libro, String autor) {
+        this.idLibro = idLibro;
+        this.acceso = acceso;
         this.titulo = titulo;
         this.link_libro = link_libro;
         this.descripcion_libro = descripcion_libro;
+        this.autor = autor;
+    }
+
+    public int getIdLibro() {
+        return idLibro;
+    }
+
+    public int getAcceso() {
+        return acceso;
     }
 
     public String getTitulo() {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getLink_libro() {
+    public byte[] getLink_libro() {
         return link_libro;
-    }
-
-    public void setLink_libro(String link_libro) {
-        this.link_libro = link_libro;
     }
 
     public String getDescripcion_libro() {
         return descripcion_libro;
     }
 
-    public void setDescripcion_libro(String descripcion_libro) {
-        this.descripcion_libro = descripcion_libro;
-    }
-
-    public void getPDFname(){
-
+    public String getAutor() {
+        return autor;
     }
 }
 

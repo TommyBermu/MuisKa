@@ -1,6 +1,5 @@
 package com.muiska;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,13 +18,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.muiska.clases.Adapters.HashMapAdapter;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
 import com.muiska.clases.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class GroupSolicitudesFragment extends Fragment implements RecyclerViewClickListener {
     private ArrayList<HashMap<String, Object>> peticion;

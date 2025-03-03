@@ -19,47 +19,24 @@ public class FolderChange {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getDocument_url() {
         return document_url;
     }
 
-    public void setDocument_url(String document_url) {
-        this.document_url = document_url;
-    }
-
     public String getLetter_url() {
         return letter_url;
-    }
-
-    public void setLetter_url(String letter_url) {
-        this.letter_url = letter_url;
     }
 
     public String getRef() {
         return ref;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
-    }
-
     public String getCarpeta() {
         return carpeta;
     }
 
-    public void setCarpeta(String carpeta) {
-        this.carpeta = carpeta;
-    }
 }
