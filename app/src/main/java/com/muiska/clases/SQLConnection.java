@@ -19,8 +19,8 @@ public class SQLConnection {
     private static String bd="MuisKa";
     private static String user="root";
     private static String password="";
-    private static String host="4.tcp.ngrok.io"; // cambia segun la sesion
-    private static String port="15411"; // cambia segun la sesion
+    private static String host="8.tcp.ngrok.io"; // cambia segun la sesion
+    private static String port="10931"; // cambia segun la sesion
 
     private static String server="jdbc:mysql://"+host+":"+port+"/"+bd+"?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"; // TODO no se si al ser solo UTC y no UTC + 5 las fechas seran diferentes
 

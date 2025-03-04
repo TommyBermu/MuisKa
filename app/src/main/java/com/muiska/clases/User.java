@@ -67,7 +67,7 @@ public class User {
         mAuth = FirebaseAuth.getInstance();
         prefs = context.getSharedPreferences(context.getString(R.string.prefs_file), MODE_PRIVATE);
         executor = Executors.newSingleThreadExecutor();
-        Log.i("EJECUTORRRRRRRRRR", "se ha instanciado otro ejecutor :D");
+        Log.i("EJECUTORRRRRRRRRR", "se ha instanciado otro ejecutor :DDD");
         sqlConnection = new SQLConnection();
         executor.execute(() -> {
             connection = sqlConnection.conectar();
@@ -156,12 +156,8 @@ public class User {
         return email;
     }
 
-    public String getProfesion() {
-        return profesion;
-    }
-
     public boolean isCompleteInfo(){
-        return profesion != null;
+        return !prefs.getString("profesion", "").isEmpty();
     }
 
     public enum Cargo {
@@ -314,8 +310,9 @@ public class User {
                 prefsEditor.putString("profesion", profesion);
                 prefsEditor.putString("fecha de nacimiento", fechaNacimiento);
                 prefsEditor.apply();
-
-                Toast.makeText(context, "Se han actualizado los datos", Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(context, "Se han actualizado los datos", Toast.LENGTH_SHORT).show();
+                });
                 Log.d("ACTUALIZACION", "Se han actualizado los datos");
             } catch (SQLException ex) {
                 Log.e("CONSULTA", "Imposible realizar consulta '"+ consulta +"' ... FAIL");

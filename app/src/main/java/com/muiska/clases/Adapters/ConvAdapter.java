@@ -1,38 +1,43 @@
 package com.muiska.clases.Adapters;
 
+import static org.chromium.base.ThreadUtils.runOnUiThread;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.muiska.R;
+import com.muiska.clases.PeticionIngresoConvocatoria;
+
 import java.util.ArrayList;
 
-public class StringAdapter extends RecyclerView.Adapter<StringAdapter.StringViewHolder> implements RecyclerViewClickListener {
-    private ArrayList<String> mStrings;
+public class ConvAdapter extends RecyclerView.Adapter<ConvAdapter.StringViewHolder> implements RecyclerViewClickListener {
+    private ArrayList<PeticionIngresoConvocatoria> ingresosConvocatorias;
     private RecyclerViewClickListener listener;
 
-    public StringAdapter(ArrayList<String> mStrings, RecyclerViewClickListener listener) {
-        this.mStrings = mStrings;
+    public ConvAdapter(ArrayList<PeticionIngresoConvocatoria> ingresosConvocatorias, RecyclerViewClickListener listener) {
+        this.ingresosConvocatorias = ingresosConvocatorias;
         this.listener = listener;
     }
 
     @NonNull
     @Override
-    public StringAdapter.StringViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_groups, parent, false);
+    public ConvAdapter.StringViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_convs, parent, false);
         return new StringViewHolder(view, listener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull StringViewHolder holder, int position) {
-        holder.nombre.setText(mStrings.get(position));
+        holder.nombre.setText(ingresosConvocatorias.get(position).getConvNombre());
     }
 
     @Override
     public int getItemCount() {
-        return mStrings.size();
+        return ingresosConvocatorias.size();
     }
 
     @Override
@@ -47,7 +52,7 @@ public class StringAdapter extends RecyclerView.Adapter<StringAdapter.StringView
         public StringViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
             super(itemView);
 
-            nombre = itemView.findViewById(R.id.name_group);
+            nombre = itemView.findViewById(R.id.name_conv);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

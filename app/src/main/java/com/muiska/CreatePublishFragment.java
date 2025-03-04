@@ -164,11 +164,11 @@ public class CreatePublishFragment extends Fragment {
 
                 runOnUiThread(() -> {
                     Toast.makeText(getContext(), "Publicación creada", Toast.LENGTH_SHORT).show();
+                    imageButton.setImageResource(R.drawable.baseline_add_photo_alternate_270_p);
+                    title.setText("");
+                    description.setText("");
                 });
 
-                imageButton.setImageResource(R.drawable.baseline_add_photo_alternate_270_p);
-                title.setText("");
-                description.setText("");
                 Log.i("CONSULTA", "la consutla se realizo con exito");
 
             } catch (SQLException | IOException ex) {

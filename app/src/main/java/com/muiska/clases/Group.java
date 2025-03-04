@@ -1,38 +1,53 @@
 package com.muiska.clases;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class Group {
-    private String name, link_poster, description;
-    private HashMap<String, String> miembros;
+
+    private int idGrupo, administradorUsuarioIdUsuario, miembros, acceso;
+    private String nombre, descripcion;
+    private byte[] linkPoster;
 
     public Group() {}
 
-    public Group(String name, String link_poster, String description, HashMap<String, String> miembros) {
-        this.name = name;
-        this.link_poster = link_poster;
-        this.description = description;
+    public Group(int idGrupo, int administradorUsuarioIdUsuario, int miembros, int acceso, String nombre, String descripcion, byte[] linkPoster) {
+        this.idGrupo = idGrupo;
+        this.administradorUsuarioIdUsuario = administradorUsuarioIdUsuario;
         this.miembros = miembros;
+        this.acceso = acceso;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.linkPoster = linkPoster;
     }
 
-    public String getName() {
-        return name;
+    public Group(int idGrupo, String nombre) {
+        this.idGrupo = idGrupo;
+        this.nombre = nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public int getIdGrupo() {
+        return idGrupo;
     }
 
-    public String getLink_poster() {
-        return link_poster;
+    public int getAdministradorUsuarioIdUsuario() {
+        return administradorUsuarioIdUsuario;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public HashMap<String, String> getMiembros() {
+    public int getMiembros() {
         return miembros;
+    }
+
+    public int getAcceso() {
+        return acceso;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public byte[] getLinkPoster() {
+        return linkPoster;
     }
 }

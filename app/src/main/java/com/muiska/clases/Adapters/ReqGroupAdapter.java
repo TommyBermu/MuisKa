@@ -37,22 +37,22 @@ public class ReqGroupAdapter extends RecyclerView.Adapter<ReqGroupAdapter.ReqGro
 
     @Override
     public void onBindViewHolder(@NonNull ReqGroupViewHolder holder, int position) {
-        HashMap<String, Object> hashMap = grupos.get(position);
+        Group grupo = grupos.get(position);
 
-        holder.nombre.setText(hashMap.get("name").toString());
-        holder.email.setText(hashMap.get("email").toString());
+        // holder.nombre.setText(grupo.get("name").toString());
+        // holder.email.setText(grupo.get("email").toString());
 
         holder.deny.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actualizarPeticion(false, hashMap);
+                actualizarPeticion(false, grupo);
             }
         });
 
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actualizarPeticion(true, hashMap);
+                actualizarPeticion(true, grupo);
             }
         });
     }
@@ -68,7 +68,7 @@ public class ReqGroupAdapter extends RecyclerView.Adapter<ReqGroupAdapter.ReqGro
     @Override
     public void onItemLongCliked(int position) {}
 
-    private void actualizarPeticion(boolean accepted, @NonNull HashMap<String, Object> mapa) {
+    private void actualizarPeticion(boolean accepted, @NonNull Group mapa) {
         if (accepted){
             Toast.makeText(mContext, "Petición aceptada, pero no se cambia en la BD", Toast.LENGTH_SHORT).show();
             // putDA(true, mapa);

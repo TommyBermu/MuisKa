@@ -1,5 +1,7 @@
 package com.muiska;
 
+import static org.chromium.base.ThreadUtils.runOnUiThread;
+
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,10 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.muiska.clases.User;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class SeeUserInfoFragment extends Fragment {
     FragmentActivity context;
-    String Email;
-    TextView tv_name, tv_surname, tv_email, tv_name_madre, tv_surname_madre, tv_name_padre, tv_surname_padre, tv_cumpleanios, tv_sexo, tv_clan, tv_cargo;
+    int usrId;
+    TextView tv_name, tv_surname, tv_email, tv_name_madre, tv_surname_madre, tv_name_padre, tv_surname_padre, tv_cumpleanios, tv_cargo;
+    User usuario;
 
     public SeeUserInfoFragment() {
         // Required empty public constructor
@@ -23,9 +32,10 @@ public class SeeUserInfoFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = requireActivity();
+        usuario = ((MainActivity) requireActivity()).getUsuario();
 
         if (getArguments() != null) {
-            Email = getArguments().getString("email");
+            usrId = getArguments().getInt("usrId");
         }
     }
 
@@ -48,34 +58,43 @@ public class SeeUserInfoFragment extends Fragment {
         tv_cumpleanios = view.findViewById(R.id.birthdayDate);
         tv_cargo = view.findViewById(R.id.profession);
 
+        usuario.getExecutor().execute(() -> {
+            String consulta = "SELECT * FROM Usuario WHERE idUsuario = ?";
+            try (PreparedStatement verInfo = usuario.getConnection().prepareStatement(consulta)) {
 
-        /* TODO la info se saca con el Email :D (ez)
-        db.collection("users").document(Email).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                User comunero = documentSnapshot.toObject(User.class);
-                assert comunero != null: "Comuero es null en SeeUserInfoFragment";
+                verInfo.setInt(1, usrId);
 
-                tv_name.setText(comunero.getNombre());
-                tv_surname.setText(comunero.getApellidos());
-                tv_email.setText(comunero.getEmail());
+                ResultSet rs = verInfo.executeQuery();
 
-                db.collection("info_comunero").document(Email).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        tv_name_madre.setText(documentSnapshot.getString("nombre Madre"));
-                        tv_surname_madre.setText(documentSnapshot.getString("apellidos Madre"));
-                        tv_name_padre.setText(documentSnapshot.getString("nombre Padre"));
-                        tv_surname_padre.setText(documentSnapshot.getString("apellidos Padre"));
-                        tv_cumpleanios.setText(documentSnapshot.getString("fecha de nacimiento"));
-                        tv_sexo.setText(documentSnapshot.getString("sexo"));
-                        tv_clan.setText("" + documentSnapshot.getDouble("clan")); // TODO pasar de numero entero a clan con la lista que esta en el firebase
-                        tv_cargo.setText(documentSnapshot.getString("profesion"));
-                    }
-                });
+                while (rs.next()) {
+                    String nombre = rs.getString("Nombre");
+                    String apellidos = rs.getString("Apellidos");
+                    String email = rs.getString("Email");
+                    String nombreMadre = rs.getString("nombreMadre");
+                    String apellidosMadre = rs.getString("apellidosMadre");
+                    String nombrePadre = rs.getString("nombrePadre");
+                    String apellidosPadre = rs.getString("apellidosPadre");
+                    String fechaNacimiento = rs.getDate("fechaNacimiento").toString();
+                    String cargo = rs.getString("Cargo");
+
+                    runOnUiThread(() -> {
+                        tv_name.setText(nombre);
+                        tv_surname.setText(apellidos);
+                        tv_email.setText(email);
+                        tv_name_madre.setText(nombreMadre);
+                        tv_surname_madre.setText(apellidosMadre);
+                        tv_name_padre.setText(nombrePadre);
+                        tv_surname_padre.setText(apellidosPadre);
+                        tv_cumpleanios.setText(fechaNacimiento);
+                        tv_cargo.setText(cargo);
+                    });
+                }
+
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         });
-
-         */
     }
 }

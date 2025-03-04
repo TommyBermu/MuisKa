@@ -21,23 +21,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
-import com.muiska.clases.Publicacion;
+import com.muiska.clases.Adapters.ReqConvAdapter;
+import com.muiska.clases.PeticionIngresoConvocatoria;
 import com.muiska.clases.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-
 
 public class ConvSolicitudesFragment extends Fragment implements RecyclerViewClickListener {
-    private ArrayList<HashMap<String, Object>> peticion;
-    private HashMapAdapter adapter;
-    private String conv;
+    private ArrayList<PeticionIngresoConvocatoria> peticionIngresoConvocatorias;
+    private ReqConvAdapter adapter;
+    private int conv;
     private User usuario;
     private FragmentActivity context;
 
@@ -57,16 +54,16 @@ public class ConvSolicitudesFragment extends Fragment implements RecyclerViewCli
         usuario = ((MainActivity) context).getUsuario();
 
         if (getArguments() != null){
-            conv = getArguments().getString("convocatoria");
-            Toast.makeText(context, conv, Toast.LENGTH_SHORT).show();
+            conv = getArguments().getInt("idConv"); // id de la convocatoria
+            Toast.makeText(context, getArguments().getString("convNombre"), Toast.LENGTH_SHORT).show();
         }
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewConvSolicitudes);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        peticion = new ArrayList<>();
-        adapter = new HashMapAdapter(peticion, context, this, HashMapAdapter.Tipo.CONVOCATORIA, conv);
+        peticionIngresoConvocatorias = new ArrayList<>();
+        adapter = new ReqConvAdapter(peticionIngresoConvocatorias, context, this, usuario);
         recyclerView.setAdapter(adapter);
 
         fetch();
@@ -94,7 +91,7 @@ public class ConvSolicitudesFragment extends Fragment implements RecyclerViewCli
                 dialog.cancel();
 
                 Bundle bundle = new Bundle();
-                bundle.putString("email", peticion.get(position).get("email").toString());
+                bundle.putInt("usrId", peticionIngresoConvocatorias.get(position).getUsuarioIdUsuario());
                 usuario.replaceFragment(new SeeUserInfoFragment(), bundle);
             }
         });
@@ -111,23 +108,27 @@ public class ConvSolicitudesFragment extends Fragment implements RecyclerViewCli
     @SuppressLint("NotifyDataSetChanged")
     public void fetch(){
         usuario.getExecutor().execute(() -> {
-            String consulta = "SELECT * FROM Publicacion";
+            String consulta = "SELECT * FROM Ingreso JOIN Peticion ON idPeticion = Peticion_idPeticion JOIN Usuario ON Usuario_idUsuario = idUsuario JOIN Publicacion ON Convocatoria_Publicacion_idPublicacion = idPublicacion WHERE Convocatoria_Publicacion_idPublicacion = ?";
             try (PreparedStatement fetch = usuario.getConnection().prepareStatement(consulta)) {
+
+                fetch.setInt(1, conv); // se coloca el id de la convocatoria
 
                 ResultSet rs = fetch.executeQuery();
 
                 while(rs.next()){
-                    peticion.add(new Publicacion(
-                            rs.getInt("idPublicacion"),
-                            rs.getString("Titulo"),
-                            rs.getBytes("LinkImagen"),
-                            rs.getString("Descripcion"),
-                            rs.getString("FechaFinalizacion"),
-                            rs.getString("FechaPublicacion"),
-                            rs.getBoolean("Tipo")
-                    ));
-                    Collections.sort(publicaciones);
-
+                    if (rs.getObject("Estado") == null) {
+                        peticionIngresoConvocatorias.add(new PeticionIngresoConvocatoria(
+                                rs.getInt("idUsuario"),
+                                rs.getString("Nombre"),
+                                rs.getString("Apellidos"),
+                                rs.getString("Email"),
+                                rs.getDate("FechaEnvio"),
+                                rs.getString("CartaMotivacion"),
+                                rs.getInt("Convocatoria_Publicacion_idPublicacion"),
+                                rs.getString("Titulo"),
+                                rs.getInt("Peticion_idPeticion")
+                        ));
+                    }
                     runOnUiThread(() -> {
                         adapter.notifyDataSetChanged();
                     });

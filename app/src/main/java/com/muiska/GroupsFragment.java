@@ -1,5 +1,7 @@
 package com.muiska;
 
+import static org.chromium.base.ThreadUtils.runOnUiThread;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
@@ -16,9 +18,14 @@ import android.view.ViewGroup;
 import com.muiska.clases.Group;
 import com.muiska.clases.Adapters.GroupAdapter;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
+import com.muiska.clases.Publicacion;
 import com.muiska.clases.User;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class GroupsFragment extends Fragment implements RecyclerViewClickListener {
     private ArrayList<Group> grupos;
@@ -48,32 +55,15 @@ public class GroupsFragment extends Fragment implements RecyclerViewClickListene
         adapter = new GroupAdapter(grupos, this);
         recyclerView.setAdapter(adapter);
 
-
-        /*
-        root.child("groups").addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    Group grupo = dataSnapshot.getValue(Group.class);
-                    grupos.add(grupo);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-
-         */
+        fetch();
     }
 
     @Override
     public void onItemCliked(int position) {
         Bundle bundle = new Bundle();
-        bundle.putString("nombre", grupos.get(position).getName());
-        bundle.putString("descripcion", grupos.get(position).getDescription());
-        bundle.putString("link", grupos.get(position).getLink_poster());
+        bundle.putString("nombre", grupos.get(position).getNombre());
+        bundle.putString("descripcion", grupos.get(position).getDescripcion());
+        bundle.putByteArray("link", grupos.get(position).getLinkPoster());
 
         usuario.replaceFragment(new JoinGroupFragment(), bundle);
     }
@@ -81,5 +71,34 @@ public class GroupsFragment extends Fragment implements RecyclerViewClickListene
     @Override
     public void onItemLongCliked(int position) {
         //TODO implementar algo xd
+    }
+
+    private void fetch(){
+        usuario.getExecutor().execute(() -> {
+            String consulta = "SELECT * FROM Grupo";
+            try (PreparedStatement consularGrupos = usuario.getConnection().prepareStatement(consulta)){
+
+                ResultSet rs = consularGrupos.executeQuery();
+
+                while(rs.next()){
+                    grupos.add(new Group(
+                            rs.getInt("idGrupo"),
+                            rs.getInt("Administrador_Usuario_idUsuario"),
+                            rs.getInt("Miembros"),
+                            rs.getInt("Acceso"),
+                            rs.getString("Nombre"),
+                            rs.getString("Descripcion"),
+                            rs.getBytes("linkPortada")
+                    ));
+
+                    runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                    });
+                }
+
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        });
     }
 }

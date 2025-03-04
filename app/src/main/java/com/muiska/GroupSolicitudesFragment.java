@@ -18,15 +18,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.muiska.clases.Adapters.GroupAdapter;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
+import com.muiska.clases.Group;
 import com.muiska.clases.User;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class GroupSolicitudesFragment extends Fragment implements RecyclerViewClickListener {
-    private ArrayList<HashMap<String, Object>> peticion;
-    private HashMapAdapter adapter;
+    private ArrayList<Group> peticion;
+    private GroupAdapter adapter;
     private String group;
     private User usuario;
     private FragmentActivity context;
@@ -58,7 +59,7 @@ public class GroupSolicitudesFragment extends Fragment implements RecyclerViewCl
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         peticion = new ArrayList<>();
-        adapter = new HashMapAdapter(peticion, context, this, HashMapAdapter.Tipo.GRUPO, group);
+        adapter = new GroupAdapter(peticion, this);
         recyclerView.setAdapter(adapter);
 
         /*
@@ -105,7 +106,7 @@ public class GroupSolicitudesFragment extends Fragment implements RecyclerViewCl
                 dialog.cancel();
 
                 Bundle bundle = new Bundle();
-                bundle.putString("email", peticion.get(position).get("email").toString());
+                // bundle.putString("email", peticion.get(position).get("email").toString());
                 usuario.replaceFragment(new SeeUserInfoFragment(), bundle);
             }
         });

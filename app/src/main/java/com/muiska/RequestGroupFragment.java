@@ -1,5 +1,7 @@
 package com.muiska;
 
+import static org.chromium.base.ThreadUtils.runOnUiThread;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
@@ -12,19 +14,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.muiska.clases.Adapters.GroupAdapter;
 import com.muiska.clases.Adapters.RecyclerViewClickListener;
-import com.muiska.clases.Adapters.StringAdapter;
+import com.muiska.clases.Group;
 import com.muiska.clases.User;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class RequestGroupFragment extends Fragment implements RecyclerViewClickListener {
-    private ArrayList<String> groups;
-    private StringAdapter adapter;
+    private ArrayList<Group> groups;
+    private GroupAdapter adapter;
     private User usuario;
 
     public RequestGroupFragment() {
@@ -46,36 +49,45 @@ public class RequestGroupFragment extends Fragment implements RecyclerViewClickL
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         groups = new ArrayList<>();
-        adapter = new StringAdapter(groups, this);
+        adapter = new GroupAdapter(groups, this);
         recyclerView.setAdapter(adapter);
 
-
-        /*
-        root.child("requests-groups").addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged") // solo hace que no se muestre un warning en en adapter.notifyDataSetChanged()
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    groups.add(dataSnapshot.getKey());
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-
-         */
+        fetch();
     }
 
     @Override
     public void onItemCliked(int position) {
         Bundle bundle = new Bundle();
-        bundle.putString("grupo", groups.get(position));
+        bundle.putString("grupo", groups.get(position).getNombre());
         usuario.replaceFragment(new GroupSolicitudesFragment(), bundle);
 
     }
 
     @Override
     public void onItemLongCliked(int position) {}
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void fetch(){
+        usuario.getExecutor().execute(() -> {
+            String consulta = "SELECT idGrupo, Nombre FROM Grupo JOIN Ingreso ON Grupo_idGrupo = idGrupo";
+            try (PreparedStatement consultarGrupos = usuario.getConnection().prepareStatement(consulta)){
+
+                ResultSet rs = consultarGrupos.executeQuery();
+
+                while (rs.next()){
+                    groups.add(new Group( // TODO creo que aca no es grupo sino peticion ingreso grupo xd
+                        rs.getInt("idGrupo"),
+                        rs.getString("Nombre")
+                    ));
+                }
+
+                runOnUiThread(() -> {
+                    adapter.notifyDataSetChanged();
+                });
+
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        });
+    }
 }

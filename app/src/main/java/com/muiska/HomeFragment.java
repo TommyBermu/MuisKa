@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickListener 
             @Override
             public void onClick(View v) {
                 usuario.getExecutor().execute(() -> {
-                    String consulta = "CALL PeticionIngresoConvocatoria(?, ?, ?)";
+                    String consulta = "CALL peticionIngresoConvocatoria(?, ?, ?)";
                     try (PreparedStatement inscribir = usuario.getConnection().prepareStatement(consulta)) {
 
                         //se agrega a la base de datos SQL

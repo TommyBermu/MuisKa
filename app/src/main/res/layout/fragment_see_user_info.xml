@@ -158,39 +158,10 @@
                 android:gravity="center"
                 android:hint="Fecha de Nacimiento"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@id/viewSexo"
+                app:layout_constraintBottom_toTopOf="@id/profession"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/surnameFather" />
-
-            <TextView
-                android:id="@+id/viewClan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:text="Clan"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/viewSexo"
-                app:layout_constraintTop_toTopOf="@+id/viewSexo" />
-
-            <TextView
-                android:id="@+id/viewSexo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="Sexo"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                app:layout_constraintBottom_toTopOf="@id/profession"
-                app:layout_constraintEnd_toStartOf="@+id/viewClan"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/birthdayDate" />
-
 
             <TextView
                 android:id="@+id/profession"
@@ -203,7 +174,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewSexo" />
+                app:layout_constraintTop_toBottomOf="@+id/birthdayDate" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline12"

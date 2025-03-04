@@ -28,7 +28,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
-        holder.title.setText(mGroups.get(position).getName());
+        holder.title.setText(mGroups.get(position).getNombre());
     }
 
     @Override

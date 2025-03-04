@@ -1,12 +1,9 @@
 package com.muiska;
 
-import static android.content.Context.MODE_PRIVATE;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +11,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-// import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
 import com.muiska.clases.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
+
 
 public class JoinGroupFragment extends Fragment {
     User usuario;
@@ -47,7 +41,7 @@ public class JoinGroupFragment extends Fragment {
 
         if (getArguments() != null){
             Bundle result = getArguments();
-            // TODO Glide.with(requireActivity()).load(result.getString("link")).into(imv_poster);
+            Glide.with(requireActivity()).load(result.getByteArray("link")).into(imv_poster);
             tv_name.setText(result.getString("nombre"));
             tv_description.setText(result.getString("descripcion"));
         }
@@ -71,7 +65,7 @@ public class JoinGroupFragment extends Fragment {
                 mapa.put("accepted", null);// null porque, aunque se incriba, no significa que sea aceptado
 
 
-                /*
+                /* TODO falta por hacer :D
                 String path = root.push().getKey();
                 assert path != null;
 
