@@ -1,9 +1,12 @@
-lo que falta por hacer:
+Aplicación móvil diseñada para la comunidad indígena Muisca de Bosa.
+Funciona como una base de datos comunitaria que permite:
 
-1. hacer que se puedan subir los archivos en las peticiones (imagenes, pdf, etc...) a sql (osea ya se puede pero toca probarlo xd)
-   - crear los procedimentos almacenas si es que hay que insertar en varias tablas al tiempo
+📂 Gestión de documentos de los miembros.
 
-3. terminar de migrar los recyclerViews, con sus respectivos adaptadores
-   - hacer que se muestren las imagenes desde el LONGBLOB
+🧑‍🤝‍🧑 Acceso fácil a la información de la comunidad.
 
-4. separar las interfaces para cada usuario
+📸 Un espacio tipo Instagram, pensado solo para la comunidad, donde se pueden compartir fotos, noticias y actividades culturales.
+
+🚀 Objetivo
+
+Fortalecer la identidad y organización de la comunidad Muisca de Bosa mediante una herramienta digital propia, segura y fácil de usar.
